@@ -132,8 +132,13 @@ const CADAnalysisApp = () => {
   };
 
   const FloorPlanVisualization = () => (
-    <div className="bg-white border-2 border-gray-200 rounded-lg p-4 h-96">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800">Extracted Floor Plan</h3>
+    <div className="bg-gradient-to-br from-white to-blue-50 border-2 border-blue-200 rounded-2xl p-6 h-96 shadow-xl">
+      <h3 className="text-xl font-bold mb-4 text-slate-800 flex items-center gap-2">
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-lg">
+          <Layout className="w-5 h-5 text-white" />
+        </div>
+        Extracted Floor Plan
+      </h3>
       <svg width="400" height="300" className="border border-gray-300">
         {/* Background */}
         <rect width="400" height="300" fill="#f8f9fa" />
@@ -201,15 +206,18 @@ const CADAnalysisApp = () => {
       </svg>
       
       {floorPlanData && (
-        <div className="mt-4 grid grid-cols-3 gap-4 text-sm">
-          <div className="bg-blue-50 p-2 rounded">
-            <strong>Total Area:</strong> {(floorPlanData.totalArea / 1000000).toFixed(1)} m²
+        <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
+          <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-xl border border-blue-300">
+            <div className="font-bold text-blue-800">Total Area</div>
+            <div className="text-xl font-black text-blue-900">{(floorPlanData.totalArea / 1000000).toFixed(1)} m²</div>
           </div>
-          <div className="bg-green-50 p-2 rounded">
-            <strong>Walls Detected:</strong> {floorPlanData.walls.length}
+          <div className="bg-gradient-to-br from-green-100 to-green-200 p-3 rounded-xl border border-green-300">
+            <div className="font-bold text-green-800">Walls Detected</div>
+            <div className="text-xl font-black text-green-900">{floorPlanData.walls.length}</div>
           </div>
-          <div className="bg-yellow-50 p-2 rounded">
-            <strong>Openings:</strong> {floorPlanData.doors.length}
+          <div className="bg-gradient-to-br from-amber-100 to-yellow-200 p-3 rounded-xl border border-amber-300">
+            <div className="font-bold text-amber-800">Openings</div>
+            <div className="text-xl font-black text-amber-900">{floorPlanData.doors.length}</div>
           </div>
         </div>
       )}
@@ -217,8 +225,13 @@ const CADAnalysisApp = () => {
   );
 
   const IlotVisualization = () => (
-    <div className="bg-white border-2 border-gray-200 rounded-lg p-4 h-96">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800">Îlot Placement Analysis</h3>
+    <div className="bg-gradient-to-br from-white to-green-50 border-2 border-green-200 rounded-2xl p-6 h-96 shadow-xl">
+      <h3 className="text-xl font-bold mb-4 text-slate-800 flex items-center gap-2">
+        <div className="bg-gradient-to-br from-green-500 to-green-600 p-2 rounded-lg">
+          <Grid className="w-5 h-5 text-white" />
+        </div>
+        Îlot Placement Analysis
+      </h3>
       <svg width="400" height="300" className="border border-gray-300">
         {/* Background floor plan */}
         <rect width="400" height="300" fill="#f8f9fa" />
@@ -284,8 +297,13 @@ const CADAnalysisApp = () => {
   );
 
   const CorridorVisualization = () => (
-    <div className="bg-white border-2 border-gray-200 rounded-lg p-4 h-96">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800">Corridor Network Analysis</h3>
+    <div className="bg-gradient-to-br from-white to-purple-50 border-2 border-purple-200 rounded-2xl p-6 h-96 shadow-xl">
+      <h3 className="text-xl font-bold mb-4 text-slate-800 flex items-center gap-2">
+        <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-2 rounded-lg">
+          <GitBranch className="w-5 h-5 text-white" />
+        </div>
+        Corridor Network Analysis
+      </h3>
       <svg width="400" height="300" className="border border-gray-300">
         {/* Background */}
         <rect width="400" height="300" fill="#f8f9fa" />
@@ -401,9 +419,11 @@ const CADAnalysisApp = () => {
   };
 
   const CorridorConfigPanel = () => (
-    <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-4 mb-6">
-      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-        <Settings className="w-5 h-5" />
+    <div className="bg-gradient-to-br from-slate-50 to-gray-100 border-2 border-slate-300 rounded-2xl p-6 mb-8 shadow-xl">
+      <h3 className="text-xl font-bold mb-6 flex items-center gap-3 text-slate-800">
+        <div className="bg-gradient-to-br from-slate-600 to-gray-700 p-2 rounded-xl">
+          <Settings className="w-6 h-6 text-white" />
+        </div>
         Corridor Configuration
       </h3>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -479,23 +499,27 @@ const CADAnalysisApp = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 rounded-2xl shadow-2xl p-8 mb-8 border border-blue-800/30">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <FileText className="w-8 h-8 text-blue-600" />
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent flex items-center gap-4">
+                <div className="bg-gradient-to-br from-blue-500 to-cyan-400 p-3 rounded-xl shadow-lg">
+                  <FileText className="w-10 h-10 text-white" />
+                </div>
                 CAD Analysis Pro
               </h1>
-              <p className="text-gray-600 mt-2">Professional DXF/DWG/PDF Floor Plan Analysis</p>
+              <p className="text-blue-200 mt-3 text-lg font-medium">Professional DXF/DWG/PDF Floor Plan Analysis & Optimization</p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               <div className="text-right">
-                <div className="text-sm text-gray-500">Processing Engine</div>
-                <div className="text-lg font-semibold text-green-600 flex items-center gap-2">
-                  <Zap className="w-5 h-5" />
+                <div className="text-sm text-blue-300 font-medium">Processing Engine</div>
+                <div className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent flex items-center gap-2 mt-1">
+                  <div className="bg-gradient-to-br from-emerald-500 to-green-500 p-2 rounded-lg">
+                    <Zap className="w-6 h-6 text-white" />
+                  </div>
                   Ultra High Performance
                 </div>
               </div>
@@ -504,13 +528,15 @@ const CADAnalysisApp = () => {
         </div>
 
         {/* File Upload */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Upload className="w-5 h-5" />
+        <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl border-2 border-blue-100 p-8 mb-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
+            <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-xl">
+              <Upload className="w-6 h-6 text-white" />
+            </div>
             Upload CAD File
           </h2>
           <div 
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 transition-colors"
+            className="border-3 border-dashed border-blue-300 rounded-2xl p-12 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-300 bg-gradient-to-br from-blue-50/30 to-indigo-50/30"
             onClick={() => fileInputRef.current?.click()}
           >
             <input
@@ -521,18 +547,27 @@ const CADAnalysisApp = () => {
               className="hidden"
             />
             {uploadedFile ? (
-              <div className="text-green-600">
-                <FileText className="w-12 h-12 mx-auto mb-4" />
-                <p className="text-lg font-medium">{uploadedFile.name}</p>
-                <p className="text-sm text-gray-500">
-                  {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+              <div className="text-emerald-700">
+                <div className="bg-gradient-to-br from-emerald-500 to-green-500 w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center shadow-lg">
+                  <FileText className="w-8 h-8 text-white" />
+                </div>
+                <p className="text-xl font-bold">{uploadedFile.name}</p>
+                <p className="text-sm text-emerald-600 mt-2 font-medium">
+                  {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB • Ready for processing
                 </p>
               </div>
             ) : (
-              <div className="text-gray-500">
-                <Upload className="w-12 h-12 mx-auto mb-4" />
-                <p className="text-lg">Drop your CAD file here or click to browse</p>
-                <p className="text-sm">Supports DXF, DWG, and PDF formats</p>
+              <div className="text-slate-600">
+                <div className="bg-gradient-to-br from-blue-500 to-indigo-500 w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Upload className="w-8 h-8 text-white" />
+                </div>
+                <p className="text-xl font-bold mb-2">Drop your CAD file here or click to browse</p>
+                <p className="text-sm text-slate-500 font-medium">Supports DXF, DWG, and PDF formats up to 100MB</p>
+                <div className="flex justify-center gap-4 mt-4">
+                  <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">DXF</span>
+                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">DWG</span>
+                  <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">PDF</span>
+                </div>
               </div>
             )}
           </div>
@@ -540,51 +575,83 @@ const CADAnalysisApp = () => {
 
         {/* Processing Steps */}
         {uploadedFile && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-6">Processing Pipeline</h2>
-            <div className="flex justify-between items-center mb-8">
+          <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl shadow-2xl border border-slate-200 p-8 mb-8">
+            <h2 className="text-2xl font-bold mb-8 text-slate-800 flex items-center gap-3">
+              <div className="bg-gradient-to-br from-purple-500 to-blue-600 p-2 rounded-xl">
+                <GitBranch className="w-6 h-6 text-white" />
+              </div>
+              Processing Pipeline
+            </h2>
+            <div className="flex justify-between items-start mb-8">
               {steps.map((step, index) => {
                 const Icon = step.icon;
                 const isActive = index === currentStep;
                 const isCompleted = index < currentStep;
                 
                 return (
-                  <div key={index} className="flex flex-col items-center">
-                    <div 
-                      className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
-                        isCompleted 
-                          ? 'bg-green-100 text-green-600' 
-                          : isActive 
-                          ? `bg-${step.color}-100 text-${step.color}-600` 
-                          : 'bg-gray-100 text-gray-400'
-                      }`}
-                    >
-                      <Icon className="w-6 h-6" />
+                  <div key={index} className="flex flex-col items-center max-w-xs">
+                    <div className="relative mb-4">
+                      <div 
+                        className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300 ${
+                          isCompleted 
+                            ? 'bg-gradient-to-br from-emerald-500 to-green-500 text-white scale-110' 
+                            : isActive 
+                            ? `bg-gradient-to-br from-${step.color}-500 to-${step.color}-600 text-white scale-110 animate-pulse` 
+                            : 'bg-gradient-to-br from-gray-200 to-gray-300 text-gray-500'
+                        }`}
+                      >
+                        <Icon className="w-8 h-8" />
+                      </div>
+                      {isCompleted && (
+                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
                     </div>
-                    <span className={`text-sm font-medium ${
-                      isCompleted ? 'text-green-600' : 
-                      isActive ? `text-${step.color}-600` : 'text-gray-400'
+                    <h3 className={`text-lg font-bold text-center mb-2 ${
+                      isCompleted ? 'text-emerald-700' : 
+                      isActive ? `text-${step.color}-700` : 'text-gray-500'
                     }`}>
                       {step.title}
-                    </span>
+                    </h3>
                     <button
                       onClick={() => processStep(index)}
                       disabled={processing || (index > 0 && !floorPlanData) || (index > 1 && !ilotData)}
-                      className={`mt-2 px-4 py-2 text-sm rounded-md transition-colors ${
-                        processing 
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      className={`px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl ${
+                        processing && index === currentStep
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white cursor-not-allowed animate-pulse'
                           : isCompleted
-                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                          : `bg-${step.color}-100 text-${step.color}-700 hover:bg-${step.color}-200`
+                          ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white hover:from-emerald-600 hover:to-green-600'
+                          : processing || (index > 0 && !floorPlanData) || (index > 1 && !ilotData)
+                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                          : `bg-gradient-to-r from-${step.color}-500 to-${step.color}-600 text-white hover:from-${step.color}-600 hover:to-${step.color}-700 hover:scale-105`
                       }`}
                     >
-                      {processing && index === currentStep ? 'Processing...' : 
-                       isCompleted ? 'Completed' : 'Process'}
+                      {processing && index === currentStep ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Processing...
+                        </div>
+                      ) : 
+                       isCompleted ? 'Completed ✓' : 'Process Step'}
                     </button>
                   </div>
                 );
               })}
             </div>
+            
+            {/* Progress Bar */}
+            <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+              <div 
+                className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500"
+                style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
+              ></div>
+            </div>
+            <p className="text-center text-slate-600 font-medium">
+              Step {currentStep + 1} of {steps.length} • {Math.round((currentStep / (steps.length - 1)) * 100)}% Complete
+            </p>
           </div>
         )}
 
@@ -613,53 +680,76 @@ const CADAnalysisApp = () => {
 
         {/* Export Options */}
         {analysisResult && (
-          <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Download className="w-5 h-5" />
+          <div className="bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-2xl border-2 border-indigo-200 p-8 mt-8">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3 text-slate-800">
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-3 rounded-xl">
+                <Download className="w-6 h-6 text-white" />
+              </div>
               Export Results
             </h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               <button 
                 onClick={() => handleExport('pdf')}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                className="bg-gradient-to-br from-blue-500 to-blue-600 text-white px-6 py-4 rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold"
               >
-                Export PDF Report
+                <div className="flex flex-col items-center gap-2">
+                  <FileText className="w-6 h-6" />
+                  Export PDF Report
+                </div>
               </button>
               <button 
                 onClick={() => handleExport('dxf')}
-                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                className="bg-gradient-to-br from-green-500 to-green-600 text-white px-6 py-4 rounded-2xl hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold"
               >
-                Export DXF File
+                <div className="flex flex-col items-center gap-2">
+                  <Layout className="w-6 h-6" />
+                  Export DXF File
+                </div>
               </button>
               <button 
                 onClick={() => handleExport('3d')}
-                className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
+                className="bg-gradient-to-br from-purple-500 to-purple-600 text-white px-6 py-4 rounded-2xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold"
               >
-                Export 3D Model
+                <div className="flex flex-col items-center gap-2">
+                  <Eye className="w-6 h-6" />
+                  Export 3D Model
+                </div>
               </button>
               <button 
                 onClick={() => handleExport('json')}
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
+                className="bg-gradient-to-br from-slate-500 to-gray-600 text-white px-6 py-4 rounded-2xl hover:from-slate-600 hover:to-gray-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold"
               >
-                Export Data JSON
+                <div className="flex flex-col items-center gap-2">
+                  <FileText className="w-6 h-6" />
+                  Export Data JSON
+                </div>
               </button>
             </div>
             
             {/* Analysis Summary */}
-            <div className="mt-6 bg-gray-50 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-3">Analysis Summary</h3>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Total Îlots:</span> {analysisResult.optimization.totalIlots}
+            <div className="mt-8 bg-gradient-to-br from-slate-100 to-blue-100 rounded-2xl p-6 border-2 border-slate-200">
+              <h3 className="text-2xl font-bold mb-6 text-slate-800 flex items-center gap-2">
+                <div className="bg-gradient-to-br from-slate-600 to-blue-600 p-2 rounded-lg">
+                  <MapPin className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                  <span className="font-medium">Space Utilization:</span> {analysisResult.optimization.spaceUtilization.toFixed(1)}%
+                Analysis Summary
+              </h3>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-4 rounded-xl border-2 border-blue-300 text-center">
+                  <div className="text-3xl font-black text-blue-900 mb-1">{analysisResult.optimization.totalIlots}</div>
+                  <div className="font-bold text-blue-700">Total Îlots</div>
                 </div>
-                <div>
-                  <span className="font-medium">Corridor Length:</span> {(analysisResult.optimization.totalCorridorLength / 1000).toFixed(1)}m
+                <div className="bg-gradient-to-br from-green-100 to-green-200 p-4 rounded-xl border-2 border-green-300 text-center">
+                  <div className="text-3xl font-black text-green-900 mb-1">{analysisResult.optimization.spaceUtilization.toFixed(1)}%</div>
+                  <div className="font-bold text-green-700">Space Utilization</div>
                 </div>
-                <div>
-                  <span className="font-medium">Overall Efficiency:</span> {analysisResult.optimization.efficiency.toFixed(1)}%
+                <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-4 rounded-xl border-2 border-purple-300 text-center">
+                  <div className="text-3xl font-black text-purple-900 mb-1">{(analysisResult.optimization.totalCorridorLength / 1000).toFixed(1)}m</div>
+                  <div className="font-bold text-purple-700">Corridor Length</div>
+                </div>
+                <div className="bg-gradient-to-br from-amber-100 to-yellow-200 p-4 rounded-xl border-2 border-amber-300 text-center">
+                  <div className="text-3xl font-black text-amber-900 mb-1">{analysisResult.optimization.efficiency.toFixed(1)}%</div>
+                  <div className="font-bold text-amber-700">Overall Efficiency</div>
                 </div>
               </div>
             </div>

@@ -2,67 +2,26 @@ modules = ["nodejs-20"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["cairo", "ffmpeg-full", "freetype", "geos", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "gumbo", "harfbuzz", "jbig2dec", "lcms2", "libGL", "libGLU", "libimagequant", "libjpeg", "libjpeg_turbo", "libtiff", "libwebp", "libxcrypt", "mupdf", "openjpeg", "pkg-config", "qhull", "swig", "tcl", "tk", "xcbuild", "xsimd", "zlib"]
 
 [deployment]
-deploymentTarget = "autoscale"
-run = ["streamlit", "run", "app.py", "--server.port", "5000"]
+deploymentTarget = "static"
+build = ["npx", "vite", "build"]
+publicDir = "dist"
 
 [workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Streamlit App"
-author = 44624609
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "streamlit run app.py --server.port 8080 --server.address 0.0.0.0"
-
-[[workflows.workflow]]
-name = "Floor Plan Analyzer"
-author = 44644246
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "streamlit run app.py --server.port 5000 --server.address 0.0.0.0"
-
-[[workflows.workflow]]
-name = "Floor Plan App"
-author = 44685095
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "streamlit run app.py --server.port 8080 --server.address 0.0.0.0"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "React Dev Server"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Build App"
+runButton = "React Dev Server"
 
 [[workflows.workflow]]
 name = "React Dev Server"
-author = "agent"
+mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npx vite --host 0.0.0.0 --port 5000"
-waitForPort = 5000
 
 [[workflows.workflow]]
 name = "Build App"
-author = "agent"
+mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

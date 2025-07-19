@@ -10,14 +10,24 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@types/three": "^0.178.1",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.7.0",
+    "fabric": "^6.7.0",
+    "file-saver": "^2.0.5",
+    "jsts": "^2.12.1",
     "lucide-react": "^0.525.0",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.3.93",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.11",
+    "three": "^0.178.0",
     "typescript": "^5.8.3",
+    "uuid": "^11.1.0",
     "vite": "^6.3.5"
   }
 }

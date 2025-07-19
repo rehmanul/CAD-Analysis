@@ -2,7 +2,7 @@ services:
   - type: web
     name: cad-analysis-pro
     env: static
-    buildCommand: npm install && npm run build
+    buildCommand: npx vite build
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: false
     headers:

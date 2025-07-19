@@ -1,0 +1,50 @@
+2025-07-19T11:24:32.58971511Z #12 0.933 npm warn EBADENGINE }
+2025-07-19T11:24:34.243315541Z #12 2.660 npm warn deprecated npmlog@5.0.1: This package is no longer supported.
+2025-07-19T11:24:34.397478121Z #12 2.736 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+2025-07-19T11:24:34.520112305Z #12 2.937 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+2025-07-19T11:24:34.670280346Z #12 2.990 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+2025-07-19T11:24:34.82155205Z #12 3.126 npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+2025-07-19T11:24:34.821571601Z #12 3.145 npm warn deprecated are-we-there-yet@2.0.0: This package is no longer supported.
+2025-07-19T11:24:34.821576421Z #12 3.170 npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+2025-07-19T11:24:34.821581011Z #12 3.176 npm warn deprecated gauge@3.0.2: This package is no longer supported.
+2025-07-19T11:24:40.838027366Z #12 9.165 
+2025-07-19T11:24:40.838078079Z #12 9.165 added 160 packages, and audited 161 packages in 9s
+2025-07-19T11:24:40.838128552Z #12 9.165 
+2025-07-19T11:24:40.838134432Z #12 9.165 18 packages are looking for funding
+2025-07-19T11:24:40.838138583Z #12 9.165   run `npm fund` for details
+2025-07-19T11:24:40.838143003Z #12 9.166 
+2025-07-19T11:24:40.838147783Z #12 9.166 found 0 vulnerabilities
+2025-07-19T11:24:40.838152613Z #12 9.168 npm notice
+2025-07-19T11:24:40.838157534Z #12 9.168 npm notice New major version of npm available! 10.8.2 -> 11.4.2
+2025-07-19T11:24:40.838161574Z #12 9.168 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+2025-07-19T11:24:40.838166164Z #12 9.168 npm notice To update run: npm install -g npm@11.4.2
+2025-07-19T11:24:40.838221897Z #12 9.168 npm notice
+2025-07-19T11:24:44.434359377Z #12 DONE 12.9s
+2025-07-19T11:24:44.584990274Z 
+2025-07-19T11:24:44.585031587Z #13 [builder 5/6] COPY . .
+2025-07-19T11:24:45.750674919Z #13 DONE 1.3s
+2025-07-19T11:24:45.90137259Z 
+2025-07-19T11:24:45.901396852Z #14 [builder 6/6] RUN npm run build
+2025-07-19T11:24:46.016284872Z #14 0.263 npm error Missing script: "build"
+2025-07-19T11:24:46.016308033Z #14 0.263 npm error
+2025-07-19T11:24:46.016313474Z #14 0.263 npm error To see a list of scripts, run:
+2025-07-19T11:24:46.016318594Z #14 0.263 npm error   npm run
+2025-07-19T11:24:46.166869807Z #14 0.266 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-07-19T11_24_45_920Z-debug-0.log
+2025-07-19T11:24:46.301846398Z #14 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+2025-07-19T11:24:46.301864539Z ------
+2025-07-19T11:24:46.301868399Z  > [builder 6/6] RUN npm run build:
+2025-07-19T11:24:46.301871209Z 0.263 npm error Missing script: "build"
+2025-07-19T11:24:46.301873979Z 0.263 npm error
+2025-07-19T11:24:46.301876819Z 0.263 npm error To see a list of scripts, run:
+2025-07-19T11:24:46.301880249Z 0.263 npm error   npm run
+2025-07-19T11:24:46.30188366Z 0.266 npm error A complete log of this run can be found in: /root/.npm/_logs/2025-07-19T11_24_45_920Z-debug-0.log
+2025-07-19T11:24:46.30188652Z ------
+2025-07-19T11:24:46.303691263Z Dockerfile:16
+2025-07-19T11:24:46.303704794Z --------------------
+2025-07-19T11:24:46.303708754Z   14 |     
+2025-07-19T11:24:46.303712994Z   15 |     # Build the application
+2025-07-19T11:24:46.303717085Z   16 | >>> RUN npm run build
+2025-07-19T11:24:46.303720545Z   17 |     
+2025-07-19T11:24:46.303724225Z   18 |     # Production stage
+2025-07-19T11:24:46.303727635Z --------------------
+2025-07-19T11:24:46.303731686Z error: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

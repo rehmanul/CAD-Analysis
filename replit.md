@@ -27,6 +27,9 @@ A comprehensive CAD analysis application built with React, TypeScript, and Tailw
 - **2025-07-19**: Added advanced corridor generation with facing îlot detection
 - **2025-07-19**: Integrated comprehensive export functionality (PDF, DXF, 3D, JSON)
 - **2025-07-19**: Completed corridor configuration panel with user-configurable parameters
+- **2025-07-19**: Enhanced îlot placement with realistic office layout patterns (rows, columns, grids)
+- **2025-07-19**: Improved corridor generation to touch îlots without overlapping
+- **2025-07-19**: Added comprehensive deployment configurations (Render, Netlify, Vercel, Docker)
 
 ## User Preferences
 - Professional, security-focused development
@@ -35,5 +38,13 @@ A comprehensive CAD analysis application built with React, TypeScript, and Tailw
 
 ## Development Notes
 - Main component: `src/CADAnalysisApp.tsx`
-- Currently uses mock data for demonstration
-- Ready for backend integration and real CAD processing
+- Advanced algorithms for realistic office layouts
+- Comprehensive deployment configurations included
+- Ready for production deployment on multiple platforms
+
+## Deployment Options
+- **Render**: Static site with `render.yaml` configuration
+- **Netlify**: SPA deployment with `netlify.toml` and `_redirects`
+- **Vercel**: Optimized with `vercel.json` configuration
+- **Docker**: Containerized with Nginx for production
+- **Manual**: Build with `npm run build` and serve `dist/` folder

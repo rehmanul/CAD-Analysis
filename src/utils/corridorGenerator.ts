@@ -74,27 +74,41 @@ export class CorridorGenerator {
   }
 
   private areIlotsFacing(ilot1: Ilot, ilot2: Ilot): { direction: 'horizontal' | 'vertical' } | null {
-    const tolerance = 500; // 50cm tolerance for alignment
-    const maxDistance = 8000; // Maximum 8m distance for facing relationship
+    const alignmentTolerance = 800; // 80cm tolerance for alignment - more realistic
+    const maxDistance = 6000; // Maximum 6m distance for facing relationship
+    const minDistance = 1500; // Minimum 1.5m distance to avoid too close îlots
     
     // Calculate ilot bounds
     const bounds1 = this.getIlotBounds(ilot1);
     const bounds2 = this.getIlotBounds(ilot2);
     
-    // Check horizontal facing (rows facing each other)
+    const centerDistance = this.calculateDistance(bounds1.center, bounds2.center);
+    
+    // Too close or too far
+    if (centerDistance < minDistance || centerDistance > maxDistance) {
+      return null;
+    }
+    
+    // Check horizontal facing (îlots in same row, facing each other across corridor)
+    const yAlignment = Math.abs(bounds1.center.y - bounds2.center.y);
+    const xSeparation = Math.abs(bounds1.center.x - bounds2.center.x);
+    
     if (
-      Math.abs(bounds1.center.y - bounds2.center.y) < tolerance && // Same row (Y aligned)
-      Math.abs(bounds1.center.x - bounds2.center.x) < maxDistance && // Within reasonable distance
-      (bounds1.right < bounds2.left || bounds2.right < bounds1.left) // Not overlapping horizontally
+      yAlignment < alignmentTolerance && // Y aligned (same row)
+      xSeparation >= this.config.width + 600 && // Adequate space for corridor + margins
+      (bounds1.right < bounds2.left - this.config.width || bounds2.right < bounds1.left - this.config.width) // Not overlapping with corridor space
     ) {
       return { direction: 'horizontal' };
     }
     
-    // Check vertical facing (columns facing each other)
+    // Check vertical facing (îlots in same column, facing each other across corridor)
+    const xAlignment = Math.abs(bounds1.center.x - bounds2.center.x);
+    const ySeparation = Math.abs(bounds1.center.y - bounds2.center.y);
+    
     if (
-      Math.abs(bounds1.center.x - bounds2.center.x) < tolerance && // Same column (X aligned)
-      Math.abs(bounds1.center.y - bounds2.center.y) < maxDistance && // Within reasonable distance
-      (bounds1.bottom < bounds2.top || bounds2.bottom < bounds1.top) // Not overlapping vertically
+      xAlignment < alignmentTolerance && // X aligned (same column)
+      ySeparation >= this.config.width + 600 && // Adequate space for corridor + margins
+      (bounds1.bottom < bounds2.top - this.config.width || bounds2.bottom < bounds1.top - this.config.width) // Not overlapping with corridor space
     ) {
       return { direction: 'vertical' };
     }
@@ -119,35 +133,60 @@ export class CorridorGenerator {
     const bounds1 = this.getIlotBounds(ilot1);
     const bounds2 = this.getIlotBounds(ilot2);
     
-    // Determine corridor direction and calculate path
+    // Determine corridor direction and calculate path that touches îlots
     let path: Point[] = [];
     let corridorLength = 0;
     
-    if (Math.abs(bounds1.center.y - bounds2.center.y) < 500) {
-      // Horizontal corridor
+    // Check if they're horizontally aligned (same row)
+    if (Math.abs(bounds1.center.y - bounds2.center.y) < 800) {
+      // Horizontal corridor between facing îlots
       const y = (bounds1.center.y + bounds2.center.y) / 2;
-      const startX = Math.min(bounds1.right, bounds2.right);
-      const endX = Math.max(bounds1.left, bounds2.left);
       
-      if (startX < endX) {
+      let startX: number, endX: number;
+      
+      if (bounds1.center.x < bounds2.center.x) {
+        // ilot1 is to the left of ilot2
+        startX = bounds1.right; // Touch the right edge of ilot1
+        endX = bounds2.left;   // Touch the left edge of ilot2
+      } else {
+        // ilot1 is to the right of ilot2
+        startX = bounds2.right; // Touch the right edge of ilot2
+        endX = bounds1.left;   // Touch the left edge of ilot1
+      }
+      
+      // Ensure minimum corridor width
+      if (Math.abs(endX - startX) >= this.config.width) {
         path = [
           { x: startX, y },
           { x: endX, y }
         ];
-        corridorLength = endX - startX;
+        corridorLength = Math.abs(endX - startX);
       }
-    } else if (Math.abs(bounds1.center.x - bounds2.center.x) < 500) {
-      // Vertical corridor
+    } 
+    // Check if they're vertically aligned (same column)
+    else if (Math.abs(bounds1.center.x - bounds2.center.x) < 800) {
+      // Vertical corridor between facing îlots
       const x = (bounds1.center.x + bounds2.center.x) / 2;
-      const startY = Math.min(bounds1.bottom, bounds2.bottom);
-      const endY = Math.max(bounds1.top, bounds2.top);
       
-      if (startY < endY) {
+      let startY: number, endY: number;
+      
+      if (bounds1.center.y < bounds2.center.y) {
+        // ilot1 is above ilot2
+        startY = bounds1.bottom; // Touch the bottom edge of ilot1
+        endY = bounds2.top;     // Touch the top edge of ilot2
+      } else {
+        // ilot1 is below ilot2
+        startY = bounds2.bottom; // Touch the bottom edge of ilot2
+        endY = bounds1.top;     // Touch the top edge of ilot1
+      }
+      
+      // Ensure minimum corridor width
+      if (Math.abs(endY - startY) >= this.config.width) {
         path = [
           { x, y: startY },
           { x, y: endY }
         ];
-        corridorLength = endY - startY;
+        corridorLength = Math.abs(endY - startY);
       }
     }
     

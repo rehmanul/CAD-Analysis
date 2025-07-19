@@ -220,36 +220,141 @@ export class IlotOptimizer {
 
   private generateRandomConfiguration(usableAreas: Point[][]): Ilot[] {
     const ilots: Ilot[] = [];
-    const maxIlotsPerArea = 5;
-
+    
     usableAreas.forEach(area => {
       const areaSize = this.calculatePolygonArea(area);
-      const numIlots = Math.min(
-        maxIlotsPerArea,
-        Math.floor(areaSize / 10000000) // One ilot per 10m²
-      );
+      const targetIlots = Math.floor(areaSize / 8000000); // One ilot per 8m² for better density
+      
+      // Create îlot rows for realistic office layout
+      const bounds = this.calculateBounds(area);
+      const areaWidth = bounds.maxX - bounds.minX;
+      const areaHeight = bounds.maxY - bounds.minY;
+      
+      // Determine layout pattern based on area shape
+      if (areaWidth > areaHeight * 1.5) {
+        // Wide area - create horizontal rows
+        this.createHorizontalRows(area, bounds, ilots, targetIlots);
+      } else if (areaHeight > areaWidth * 1.5) {
+        // Tall area - create vertical columns
+        this.createVerticalColumns(area, bounds, ilots, targetIlots);
+      } else {
+        // Square-ish area - create grid pattern
+        this.createGridPattern(area, bounds, ilots, targetIlots);
+      }
+    });
 
-      for (let i = 0; i < numIlots; i++) {
-        const ilotSize = this.ilotSizes[Math.floor(Math.random() * this.ilotSizes.length)];
-        const position = this.getRandomPointInPolygon(area);
+    return ilots;
+  }
+
+  private createHorizontalRows(area: Point[], bounds: any, ilots: Ilot[], targetIlots: number): void {
+    const corridorWidth = 1200; // 1.2m corridor
+    const ilotSpacing = 600; // 60cm spacing between îlots in same row
+    
+    const availableHeight = bounds.maxY - bounds.minY;
+    const rowHeight = 3000; // 3m per row (2.5m îlot + 0.5m clearance)
+    const maxRows = Math.floor(availableHeight / (rowHeight + corridorWidth));
+    
+    for (let row = 0; row < maxRows && ilots.length < targetIlots; row++) {
+      const y = bounds.minY + (row * (rowHeight + corridorWidth)) + rowHeight / 2;
+      
+      // Place îlots in this row
+      const ilotsPerRow = Math.min(4, Math.ceil(targetIlots / maxRows));
+      const availableWidth = bounds.maxX - bounds.minX;
+      const ilotWidth = Math.min(2500, (availableWidth - (ilotsPerRow - 1) * ilotSpacing) / ilotsPerRow);
+      
+      for (let col = 0; col < ilotsPerRow && ilots.length < targetIlots; col++) {
+        const x = bounds.minX + (col * (ilotWidth + ilotSpacing)) + ilotWidth / 2;
+        const position = { x, y };
         
-        if (position && this.canPlaceIlot(position, ilotSize, ilots, area)) {
+        if (this.pointInPolygon(position, area)) {
+          const ilotSize = this.ilotSizes[row % 2]; // Alternate sizes for variety
           ilots.push({
             id: uuidv4(),
             position,
-            width: ilotSize.width,
+            width: ilotWidth,
             height: ilotSize.height,
-            area: ilotSize.area,
+            area: ilotWidth * ilotSize.height,
             type: ilotSize.type,
-            rotation: Math.random() * 360,
+            rotation: 0, // Keep aligned for corridors
             clearance: ilotSize.minClearance,
             accessibility: true
           });
         }
       }
-    });
+    }
+  }
 
-    return ilots;
+  private createVerticalColumns(area: Point[], bounds: any, ilots: Ilot[], targetIlots: number): void {
+    const corridorWidth = 1200;
+    const ilotSpacing = 600;
+    
+    const availableWidth = bounds.maxX - bounds.minX;
+    const colWidth = 3000;
+    const maxCols = Math.floor(availableWidth / (colWidth + corridorWidth));
+    
+    for (let col = 0; col < maxCols && ilots.length < targetIlots; col++) {
+      const x = bounds.minX + (col * (colWidth + corridorWidth)) + colWidth / 2;
+      
+      const ilotsPerCol = Math.min(4, Math.ceil(targetIlots / maxCols));
+      const availableHeight = bounds.maxY - bounds.minY;
+      const ilotHeight = Math.min(2500, (availableHeight - (ilotsPerCol - 1) * ilotSpacing) / ilotsPerCol);
+      
+      for (let row = 0; row < ilotsPerCol && ilots.length < targetIlots; row++) {
+        const y = bounds.minY + (row * (ilotHeight + ilotSpacing)) + ilotHeight / 2;
+        const position = { x, y };
+        
+        if (this.pointInPolygon(position, area)) {
+          const ilotSize = this.ilotSizes[col % 2];
+          ilots.push({
+            id: uuidv4(),
+            position,
+            width: ilotSize.width,
+            height: ilotHeight,
+            area: ilotSize.width * ilotHeight,
+            type: ilotSize.type,
+            rotation: 0,
+            clearance: ilotSize.minClearance,
+            accessibility: true
+          });
+        }
+      }
+    }
+  }
+
+  private createGridPattern(area: Point[], bounds: any, ilots: Ilot[], targetIlots: number): void {
+    const corridorWidth = 1200;
+    const gridCells = Math.ceil(Math.sqrt(targetIlots));
+    
+    const cellWidth = (bounds.maxX - bounds.minX) / gridCells;
+    const cellHeight = (bounds.maxY - bounds.minY) / gridCells;
+    
+    for (let row = 0; row < gridCells && ilots.length < targetIlots; row++) {
+      for (let col = 0; col < gridCells && ilots.length < targetIlots; col++) {
+        const x = bounds.minX + (col * cellWidth) + cellWidth / 2;
+        const y = bounds.minY + (row * cellHeight) + cellHeight / 2;
+        const position = { x, y };
+        
+        if (this.pointInPolygon(position, area)) {
+          const ilotSize = this.ilotSizes[Math.floor(Math.random() * this.ilotSizes.length)];
+          const maxWidth = Math.min(ilotSize.width, cellWidth - corridorWidth);
+          const maxHeight = Math.min(ilotSize.height, cellHeight - corridorWidth);
+          
+          if (maxWidth > 1000 && maxHeight > 1000) { // Minimum viable size
+            ilots.push({
+              id: uuidv4(),
+              position,
+              width: maxWidth,
+              height: maxHeight,
+              area: maxWidth * maxHeight,
+              type: ilotSize.type,
+              rotation: 0,
+              clearance: ilotSize.minClearance,
+              accessibility: true
+            });
+          }
+        }
+      }
+    }
   }
 
   private getRandomPointInPolygon(polygon: Point[]): Point | null {

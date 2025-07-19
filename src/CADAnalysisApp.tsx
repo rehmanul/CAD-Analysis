@@ -5,6 +5,7 @@ import { IlotOptimizer } from './utils/ilotOptimizer';
 import { CorridorGenerator, CorridorConfig } from './utils/corridorGenerator';
 import { ExportManager } from './utils/exportManager';
 import { FloorPlan, Ilot, Corridor, CADAnalysisResult } from './types/cad';
+import { RealisticVisualization } from './components/RealisticVisualization';
 
 const CADAnalysisApp = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -581,6 +582,19 @@ const CADAnalysisApp = () => {
           {ilotData && <IlotVisualization />}
           {corridorData && <CorridorVisualization />}
         </div>
+
+        {/* Realistic Layout Preview */}
+        {analysisResult && (
+          <div className="mt-6">
+            <RealisticVisualization
+              floorPlan={analysisResult.floorPlan}
+              ilots={analysisResult.ilots}
+              corridors={analysisResult.corridors}
+              width={800}
+              height={500}
+            />
+          </div>
+        )}
 
         {/* Export Options */}
         {analysisResult && (

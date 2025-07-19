@@ -8,9 +8,10 @@ Your application has been successfully built! The `dist/` folder contains all pr
 
 ### 1. Render (Recommended)
 - **Status**: ✅ Configuration fixed and ready
-- **Files**: `render.yaml` configured
+- **Files**: `render.yaml` or `render-simple.yaml` (use simple version if issues)
 - **Build Command**: `npx vite build`
 - **Deploy**: Connect GitHub repository to Render
+- **Note**: Use `render-simple.yaml` for minimal configuration without headers
 
 ### 2. Netlify
 - **Status**: ✅ Ready to deploy

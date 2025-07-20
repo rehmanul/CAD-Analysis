@@ -117,7 +117,7 @@ body {
   @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
 }
 
-/* Progress indicators */
+/* Enhanced Progress indicators */
 .progress-step {
   @apply flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium transition-all duration-300;
 }
@@ -132,4 +132,71 @@ body {
 
 .progress-step.pending {
   @apply bg-gray-300 text-gray-600;
+}
+
+/* New progress dots for compact design */
+.progress-dot {
+  @apply flex items-center justify-center w-8 h-8 rounded-full text-xs font-medium transition-all duration-300;
+}
+
+.progress-dot.active {
+  @apply bg-blue-500 text-white shadow-md transform scale-110;
+}
+
+.progress-dot.completed {
+  @apply bg-emerald-500 text-white shadow-md;
+}
+
+.progress-dot.pending {
+  @apply bg-gray-200 text-gray-500;
+}
+
+.progress-line {
+  @apply w-6 h-0.5 transition-all duration-300;
+}
+
+.progress-line.completed {
+  @apply bg-emerald-400;
+}
+
+.progress-line.pending {
+  @apply bg-gray-300;
+}
+
+/* Enhanced hover effects */
+.card:hover {
+  @apply transform translate-y-[-2px] shadow-2xl;
+}
+
+/* Better glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Enhanced button hover states */
+.btn-primary:hover {
+  @apply shadow-2xl transform translate-y-[-1px];
+}
+
+.btn-secondary:hover {
+  @apply shadow-2xl transform translate-y-[-1px];
+}
+
+.btn-success:hover {
+  @apply shadow-2xl transform translate-y-[-1px];
+}
+
+.btn-warning:hover {
+  @apply shadow-2xl transform translate-y-[-1px];
+}
+
+.btn-accent:hover {
+  @apply shadow-2xl transform translate-y-[-1px];
 }

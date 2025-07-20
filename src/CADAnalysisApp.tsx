@@ -145,45 +145,45 @@ const CADAnalysisApp = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Modern Header with Glass Effect */}
-      <div className="glass sticky top-0 z-50 px-6 py-6 border-b border-white/20">
+      {/* Enhanced Modern Header */}
+      <div className="glass sticky top-0 z-50 px-6 py-4 border-b border-white/20 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="relative">
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-xl shadow-lg">
-                  <FileText className="w-8 h-8 text-white" />
+            <div className="flex items-center gap-4">
+              <div className="relative group">
+                <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 p-3 rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-300">
+                  <FileText className="w-7 h-7 text-white" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
                   CAD Analysis Pro
                 </h1>
-                <p className="text-gray-600 font-medium">AI-Powered Floor Plan Analysis & Space Optimization</p>
+                <p className="text-gray-600 text-sm font-medium">Intelligent Floor Plan Analysis & Space Optimization</p>
               </div>
             </div>
             
-            {/* Progress Indicator */}
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
-                <div className={`progress-step ${currentStep >= 0 ? 'completed' : 'pending'}`}>
-                  <FileText className="w-5 h-5" />
+            {/* Enhanced Progress Indicator */}
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
+                <div className={`progress-dot ${currentStep >= 0 ? 'completed' : 'pending'}`}>
+                  <FileText className="w-4 h-4" />
                 </div>
-                <div className={`w-8 h-0.5 ${currentStep >= 1 ? 'bg-green-500' : 'bg-gray-300'} transition-colors duration-300`}></div>
-                <div className={`progress-step ${currentStep >= 1 ? 'completed' : currentStep === 0 ? 'active' : 'pending'}`}>
-                  <Grid className="w-5 h-5" />
+                <div className={`progress-line ${currentStep >= 1 ? 'completed' : 'pending'}`}></div>
+                <div className={`progress-dot ${currentStep >= 1 ? 'completed' : currentStep === 0 ? 'active' : 'pending'}`}>
+                  <Grid className="w-4 h-4" />
                 </div>
-                <div className={`w-8 h-0.5 ${currentStep >= 2 ? 'bg-green-500' : 'bg-gray-300'} transition-colors duration-300`}></div>
-                <div className={`progress-step ${currentStep >= 2 ? 'completed' : currentStep === 1 ? 'active' : 'pending'}`}>
-                  <MapPin className="w-5 h-5" />
+                <div className={`progress-line ${currentStep >= 2 ? 'completed' : 'pending'}`}></div>
+                <div className={`progress-dot ${currentStep >= 2 ? 'completed' : currentStep === 1 ? 'active' : 'pending'}`}>
+                  <MapPin className="w-4 h-4" />
                 </div>
               </div>
               
               <div className="text-right">
-                <div className="flex items-center gap-2 text-green-600 text-sm font-medium">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  AI Engine Active
+                <div className="flex items-center gap-2 text-emerald-600 text-sm font-semibold">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                  AI Ready
                 </div>
                 <div className="text-xs text-gray-500 font-mono">v2.1.0</div>
               </div>
@@ -194,23 +194,25 @@ const CADAnalysisApp = () => {
 
       <div className="max-w-7xl mx-auto p-6">
         {/* Enhanced File Upload Section */}
-        <div className="card animate-fade-in mb-8">
-          <div className="card-header">
+        <div className="card animate-fade-in mb-8 overflow-hidden">
+          <div className="card-header bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50">
             <div className="flex items-center gap-3">
-              <Upload className="w-6 h-6 text-blue-600" />
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Upload className="w-5 h-5 text-blue-600" />
+              </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Upload CAD File</h2>
-                <p className="text-sm text-gray-600">Support for DXF, DWG, and PDF formats with intelligent processing</p>
+                <h2 className="text-lg font-bold text-gray-900">Upload CAD File</h2>
+                <p className="text-sm text-gray-600">Drag & drop or click to upload • DXF, DWG, PDF supported</p>
               </div>
             </div>
           </div>
           
-          <div className="p-8">
+          <div className="p-6">
             <div 
-              className={`relative border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all duration-300 ${
+              className={`relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-500 group ${
                 uploadedFile 
-                  ? 'border-green-400 bg-green-50' 
-                  : 'border-gray-300 hover:border-blue-500 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50'
+                  ? 'border-emerald-400 bg-gradient-to-br from-emerald-50 to-green-50 shadow-lg' 
+                  : 'border-gray-300 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 hover:shadow-xl'
               }`}
               onClick={() => fileInputRef.current?.click()}
             >
@@ -224,42 +226,46 @@ const CADAnalysisApp = () => {
               
               {uploadedFile ? (
                 <div className="animate-slide-in">
-                  <div className="relative inline-block">
-                    <FileText className="w-16 h-16 mx-auto mb-4 text-green-600" />
-                    <CheckCircle className="w-6 h-6 text-green-500 absolute -top-1 -right-1 bg-white rounded-full" />
+                  <div className="relative inline-block mb-4">
+                    <div className="bg-gradient-to-br from-emerald-100 to-green-100 p-4 rounded-2xl">
+                      <FileText className="w-12 h-12 mx-auto text-emerald-600" />
+                    </div>
+                    <CheckCircle className="w-6 h-6 text-emerald-500 absolute -top-1 -right-1 bg-white rounded-full shadow-lg" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{uploadedFile.name}</h3>
-                  <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
-                    <span className="flex items-center gap-1">
-                      <BarChart3 className="w-4 h-4" />
-                      {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">{uploadedFile.name}</h3>
+                  <div className="flex items-center justify-center gap-6 text-sm">
+                    <span className="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full">
+                      <BarChart3 className="w-4 h-4 text-blue-500" />
+                      <span className="font-medium text-gray-700">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</span>
                     </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      Ready for processing
+                    <span className="flex items-center gap-2 bg-emerald-100 px-3 py-1 rounded-full">
+                      <CheckCircle className="w-4 h-4 text-emerald-600" />
+                      <span className="font-medium text-emerald-700">Ready to Process</span>
                     </span>
                   </div>
                 </div>
               ) : (
                 <div>
                   <div className="relative inline-block mb-6">
-                    <Upload className="w-16 h-16 mx-auto text-gray-400" />
-                    <div className="absolute inset-0 bg-blue-600 w-16 h-16 rounded-full opacity-0 animate-ping"></div>
+                    <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-6 rounded-3xl group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-300">
+                      <Upload className="w-12 h-12 mx-auto text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="absolute inset-0 bg-blue-400 rounded-3xl opacity-20 group-hover:animate-ping"></div>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">Drop your CAD file here</h3>
-                  <p className="text-gray-600 mb-6">Or click to browse and select your file</p>
-                  <div className="flex items-center justify-center gap-6 text-sm text-gray-500">
-                    <span className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      DXF Files
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Drag & Drop Your CAD File</h3>
+                  <p className="text-gray-600 mb-6">Or click anywhere to browse and select your file</p>
+                  <div className="flex items-center justify-center gap-4 text-sm">
+                    <span className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-full border border-blue-200">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="font-medium text-blue-700">DXF</span>
                     </span>
-                    <span className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      DWG Files
+                    <span className="flex items-center gap-2 bg-green-50 px-3 py-2 rounded-full border border-green-200">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="font-medium text-green-700">DWG</span>
                     </span>
-                    <span className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      PDF Files
+                    <span className="flex items-center gap-2 bg-red-50 px-3 py-2 rounded-full border border-red-200">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      <span className="font-medium text-red-700">PDF</span>
                     </span>
                   </div>
                 </div>

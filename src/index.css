@@ -255,13 +255,61 @@ body {
 
 /* Professional CAD button styling */
 .cad-button {
-  @apply px-3 py-1 bg-gray-700 hover:bg-gray-600 border border-gray-600 text-gray-200 text-sm transition-all duration-150;
+  @apply px-2 py-2 bg-gray-700 hover:bg-gray-600 border border-gray-600 text-gray-200 text-sm transition-all duration-150 rounded-sm;
 }
 
 .cad-button:hover {
-  @apply shadow-lg border-gray-500;
+  @apply shadow-lg border-gray-500 bg-gray-600;
 }
 
 .cad-button.active {
-  @apply bg-blue-600 border-blue-500 text-white;
+  @apply bg-blue-600 border-blue-500 text-white shadow-inner;
+}
+
+/* Additional CAD-specific colors */
+.bg-gray-750 {
+  background-color: #3a4151;
+}
+
+.bg-gray-850 {
+  background-color: #1f2332;
+}
+
+/* CAD panel styling */
+.cad-panel {
+  @apply bg-gray-850 border border-gray-600 text-gray-200;
+}
+
+.cad-input {
+  @apply bg-gray-700 border border-gray-600 text-gray-200 px-3 py-2 text-sm rounded-sm focus:border-blue-500 focus:outline-none;
+}
+
+.cad-select {
+  @apply bg-gray-700 border border-gray-600 text-gray-200 px-3 py-2 text-sm rounded-sm focus:border-blue-500 focus:outline-none;
+}
+
+/* Professional menu styling */
+.cad-menu-item {
+  @apply px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-150 cursor-pointer;
+}
+
+.cad-menu-item.active {
+  @apply bg-gray-700 text-white;
+}
+
+/* Status indicators */
+.status-indicator {
+  @apply inline-flex items-center px-2 py-1 text-xs font-medium rounded-sm;
+}
+
+.status-indicator.connected {
+  @apply bg-green-900 text-green-300;
+}
+
+.status-indicator.processing {
+  @apply bg-yellow-900 text-yellow-300;
+}
+
+.status-indicator.error {
+  @apply bg-red-900 text-red-300;
 }

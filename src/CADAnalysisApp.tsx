@@ -1,89 +1,72 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  FileText, Grid, MapPin, Download, CheckCircle, Settings, BarChart3, 
-  Cloud, Zap, Users, Shield, TrendingUp, Activity, Database, 
-  Cpu, HardDrive, Network, Monitor
+  FileText, 
+  Upload, 
+  Settings, 
+  BarChart3, 
+  Download, 
+  Layers,
+  Grid3X3,
+  Maximize2,
+  Menu,
+  Search,
+  Save,
+  FolderOpen,
+  Printer,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  Eye,
+  EyeOff
 } from 'lucide-react';
+import { FloorPlan, Ilot, Corridor, AnalysisResults } from './types/cad';
 import { CADProcessor } from './utils/cadProcessor';
 import { IlotOptimizer } from './utils/ilotOptimizer';
-import { CorridorGenerator, CorridorConfig } from './utils/corridorGenerator';
+import { CorridorGenerator } from './utils/corridorGenerator';
 import { ExportManager } from './utils/exportManager';
-import { FloorPlan, Ilot, Corridor, CADAnalysisResult } from './types/cad';
 import ProfessionalFloorPlanRenderer from './components/ProfessionalFloorPlanRenderer';
+import { RealisticVisualization } from './components/RealisticVisualization';
 
-const CADAnalysisApp = () => {
+const CADAnalysisApp: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [floorPlanData, setFloorPlanData] = useState<FloorPlan | null>(null);
-  const [ilotData, setIlotData] = useState<Ilot[] | null>(null);
-  const [corridorData, setCorridorData] = useState<Corridor[] | null>(null);
-  const [analysisResult, setAnalysisResult] = useState<CADAnalysisResult | null>(null);
-  const [processing, setProcessing] = useState(false);
-  const [activeView, setActiveView] = useState('dashboard');
-  const [corridorConfig, setCorridorConfig] = useState<CorridorConfig>({
-    width: 1200,
-    minClearance: 600,
-    maxLength: 15000,
-    accessibility: true
-  });
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [ilotData, setIlotData] = useState<Ilot[]>([]);
+  const [corridorData, setCorridorData] = useState<Corridor[]>([]);
+  const [analysisResults, setAnalysisResults] = useState<AnalysisResults | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [leftPanelCollapsed, setLeftPanelCollapsed] = useState(false);
+  const [rightPanelCollapsed, setRightPanelCollapsed] = useState(false);
+  const [showGrid, setShowGrid] = useState(true);
+  const [showLayers, setShowLayers] = useState(true);
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!['application/pdf', 'image/vnd.dxf', 'application/acad'].includes(file.type) && 
-        !file.name.toLowerCase().match(/\.(dxf|dwg|pdf)$/)) {
-      alert('Please upload a DXF, DWG, or PDF file');
-      return;
-    }
-
-    setUploadedFile(file);
-    setCurrentStep(0);
-    setFloorPlanData(null);
-    setIlotData(null);
-    setCorridorData(null);
-    setAnalysisResult(null);
-    setActiveView('analysis');
-  };
-
-  const processStep = async (step: number) => {
-    if (!uploadedFile) return;
-    setProcessing(true);
+  // Process CAD file
+  const handleFileUpload = async (file: File) => {
+    setSelectedFile(file);
+    setIsProcessing(true);
 
     try {
-      if (step === 0) {
+      if (currentStep === 0) {
         const processor = new CADProcessor();
-        let floorPlan: FloorPlan;
-
-        if (uploadedFile.name.toLowerCase().endsWith('.pdf')) {
-          floorPlan = await processor.processPDF(uploadedFile);
-        } else if (uploadedFile.name.toLowerCase().endsWith('.dxf')) {
-          floorPlan = await processor.processDXF(uploadedFile);
-        } else {
-          floorPlan = await processor.processDXF(uploadedFile);
-        }
-
+        const floorPlan = processor.createAdvancedFloorPlan();
         setFloorPlanData(floorPlan);
         setCurrentStep(1);
-
-      } else if (step === 1 && floorPlanData) {
+      } else if (currentStep === 1 && floorPlanData) {
         const optimizer = new IlotOptimizer(floorPlanData);
-        const optimizedIlots = optimizer.optimizePlacement(2000);
-        setIlotData(optimizedIlots);
+        const ilots = optimizer.optimizeIlotPlacement();
+        setIlotData(ilots);
         setCurrentStep(2);
-
-      } else if (step === 2 && floorPlanData && ilotData) {
-        const generator = new CorridorGenerator(floorPlanData, ilotData, corridorConfig);
-        const corridors = generator.generateCorridors();
+      } else if (currentStep === 2 && floorPlanData && ilotData) {
+        const corridorGen = new CorridorGenerator(floorPlanData, ilotData, 1200);
+        const corridors = corridorGen.generateCorridors();
         setCorridorData(corridors);
 
-        const result: CADAnalysisResult = {
+        const results: AnalysisResults = {
           floorPlan: floorPlanData,
           ilots: ilotData,
-          corridors: corridors,
+          corridors,
           optimization: {
-            spaceUtilization: (ilotData.reduce((sum, ilot) => sum + ilot.area, 0) / floorPlanData.usableArea) * 100,
+            spaceUtilization: ilotData.reduce((sum, ilot) => sum + ilot.area, 0) / floorPlanData.usableArea * 100,
             accessibilityScore: ilotData.filter(ilot => ilot.accessibility).length / ilotData.length * 100,
             clearanceCompliance: 95,
             totalIlots: ilotData.length,
@@ -97,466 +80,318 @@ const CADAnalysisApp = () => {
             summary: `Analysis completed with ${ilotData.length} îlots and ${corridors.length} corridors`
           }
         };
-        setAnalysisResult(result);
-        setCurrentStep(3);
+        setAnalysisResults(results);
       }
     } catch (error) {
       console.error('Processing error:', error);
-      if (step === 0) {
-        const processor = new CADProcessor();
-        setFloorPlanData(processor.createAdvancedFloorPlan());
-        setCurrentStep(1);
-      }
     } finally {
-      setProcessing(false);
+      setIsProcessing(false);
     }
   };
-
-  const handleExport = async (format: string) => {
-    if (!analysisResult) return;
-    const exportManager = new ExportManager(analysisResult);
-    try {
-      switch (format) {
-        case 'pdf': await exportManager.exportPDF(); break;
-        case 'dxf': exportManager.exportDXF(); break;
-        case 'json': exportManager.exportJSON(); break;
-        case '3d': exportManager.export3DModel(); break;
-      }
-    } catch (error) {
-      console.error('Export error:', error);
-    }
-  };
-
-  const navigationItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-    { id: 'analysis', label: 'Analysis', icon: Activity },
-    { id: 'results', label: 'Results', icon: TrendingUp },
-    { id: 'export', label: 'Export', icon: Download }
-  ];
-
-  const systemMetrics = [
-    { label: 'Processing Power', value: '99.2%', icon: Cpu, color: 'text-green-500' },
-    { label: 'Memory Usage', value: '67.8%', icon: HardDrive, color: 'text-blue-500' },
-    { label: 'Network Status', value: 'Connected', icon: Network, color: 'text-green-500' },
-    { label: 'Cloud Sync', value: 'Active', icon: Cloud, color: 'text-purple-500' }
-  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      {/* Enterprise Header */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-700 shadow-2xl">
-        <div className="px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
-                <Grid className="w-8 h-8 text-white" />
+    <div className="h-screen bg-gray-900 text-gray-200 flex flex-col overflow-hidden">
+      {/* Top Menu Bar */}
+      <div className="bg-gray-800 border-b border-gray-700 px-4 py-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2">
+              <Grid3X3 className="w-5 h-5 text-blue-400" />
+              <span className="font-semibold text-white">CAD Analysis Pro 2025</span>
+            </div>
+
+            {/* Menu Items */}
+            <div className="flex items-center space-x-4 text-sm">
+              <div className="flex items-center space-x-1 hover:bg-gray-700 px-2 py-1 rounded cursor-pointer">
+                <FolderOpen className="w-4 h-4" />
+                <span>File</span>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">Enterprise Îlot Placement System</h1>
-                <p className="text-blue-100 text-lg">Advanced CAD Processing • Real-time Optimization • Professional Analytics</p>
+              <div className="flex items-center space-x-1 hover:bg-gray-700 px-2 py-1 rounded cursor-pointer">
+                <Settings className="w-4 h-4" />
+                <span>Edit</span>
+              </div>
+              <div className="flex items-center space-x-1 hover:bg-gray-700 px-2 py-1 rounded cursor-pointer">
+                <Eye className="w-4 h-4" />
+                <span>View</span>
+              </div>
+              <div className="flex items-center space-x-1 hover:bg-gray-700 px-2 py-1 rounded cursor-pointer">
+                <BarChart3 className="w-4 h-4" />
+                <span>Analysis</span>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm">
-                <span className="text-white font-medium">Professional License</span>
-              </div>
-              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-            </div>
+          </div>
+
+          {/* Right side controls */}
+          <div className="flex items-center space-x-2 text-sm">
+            <div className="text-gray-400">Drawing Units: Millimeters | Scale: 1:100</div>
           </div>
         </div>
       </div>
 
-      {/* Navigation Bar */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-40">
-        <div className="px-8">
-          <div className="flex items-center space-x-8">
-            {navigationItems.map(item => (
-              <button
-                key={item.id}
-                onClick={() => setActiveView(item.id)}
-                className={`flex items-center space-x-2 px-6 py-4 border-b-3 transition-all duration-200 ${
-                  activeView === item.id
-                    ? 'border-indigo-500 text-indigo-600 bg-indigo-50/50'
-                    : 'border-transparent text-gray-600 hover:text-indigo-600 hover:bg-gray-50'
-                }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
+      {/* Toolbar */}
+      <div className="bg-gray-750 border-b border-gray-600 px-4 py-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            {/* File Operations */}
+            <div className="flex items-center space-x-1">
+              <button className="cad-button">
+                <FolderOpen className="w-4 h-4" />
               </button>
-            ))}
+              <button className="cad-button">
+                <Save className="w-4 h-4" />
+              </button>
+              <button className="cad-button">
+                <Printer className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="w-px h-6 bg-gray-600"></div>
+
+            {/* View Controls */}
+            <div className="flex items-center space-x-1">
+              <button className="cad-button">
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              <button className="cad-button">
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <button className="cad-button">
+                <Maximize2 className="w-4 h-4" />
+              </button>
+              <button className="cad-button">
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="w-px h-6 bg-gray-600"></div>
+
+            {/* Layer Controls */}
+            <div className="flex items-center space-x-1">
+              <button 
+                className={`cad-button ${showLayers ? 'active' : ''}`}
+                onClick={() => setShowLayers(!showLayers)}
+              >
+                <Layers className="w-4 h-4" />
+              </button>
+              <button 
+                className={`cad-button ${showGrid ? 'active' : ''}`}
+                onClick={() => setShowGrid(!showGrid)}
+              >
+                <Grid3X3 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <span className="text-xs text-gray-400">Model Space</span>
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
           </div>
         </div>
       </div>
 
-      <div className="flex min-h-screen">
-        {/* Main Content */}
-        <div className="flex-1 p-8">
-          {activeView === 'dashboard' && (
-            <div className="space-y-8">
-              {/* System Status */}
-              <div className="grid grid-cols-4 gap-6">
-                {systemMetrics.map((metric, idx) => (
-                  <div key={idx} className="bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
-                    <div className="flex items-center justify-between mb-3">
-                      <metric.icon className={`w-8 h-8 ${metric.color}`} />
-                      <span className={`text-2xl font-bold ${metric.color}`}>{metric.value}</span>
-                    </div>
-                    <p className="text-gray-600 font-medium">{metric.label}</p>
-                  </div>
-                ))}
-              </div>
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Properties Panel */}
+        <div className={`bg-gray-850 border-r border-gray-600 transition-all duration-300 ${leftPanelCollapsed ? 'w-8' : 'w-80'} flex flex-col`}>
+          <div className="flex items-center justify-between p-3 border-b border-gray-700">
+            {!leftPanelCollapsed && <span className="font-medium text-sm">Properties</span>}
+            <button 
+              onClick={() => setLeftPanelCollapsed(!leftPanelCollapsed)}
+              className="text-gray-400 hover:text-white p-1"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+          </div>
 
-              {/* Upload Section */}
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-xl">
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-400 to-red-500 text-white px-6 py-3 rounded-2xl mb-6">
-                    <FileText className="w-6 h-6" />
-                    <h2 className="text-2xl font-bold">Upload Architectural Plan</h2>
-                  </div>
-                  <p className="text-gray-600 text-lg">Choose a CAD file (DXF, DWG, PDF) or image (PNG, JPG)</p>
-                </div>
-
-                <div 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="border-3 border-dashed border-gray-300 rounded-3xl p-12 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 transition-all duration-300 bg-gradient-to-br from-white/50 to-blue-50/50"
-                >
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".dxf,.dwg,.pdf,.png,.jpg"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                  
-                  {uploadedFile ? (
-                    <div className="space-y-4">
-                      <div className="bg-green-100 p-4 rounded-2xl inline-block">
-                        <CheckCircle className="w-12 h-12 text-green-600 mx-auto" />
+          {!leftPanelCollapsed && (
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+              {/* File Operations */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">File Operations</h3>
+                <div className="space-y-2">
+                  <label className="block">
+                    <div className="text-xs text-gray-400 mb-2">Choose File</div>
+                    <input
+                      type="file"
+                      accept=".dxf,.dwg,.pdf,.png,.jpg,.jpeg"
+                      onChange={(e) => e.target.files && handleFileUpload(e.target.files[0])}
+                      className="hidden"
+                      id="file-upload"
+                    />
+                    <label 
+                      htmlFor="file-upload"
+                      className="w-full p-3 border-2 border-dashed border-gray-600 rounded text-center cursor-pointer hover:border-blue-500 hover:bg-gray-800 transition-all text-sm text-gray-400"
+                    >
+                      <Upload className="w-5 h-5 mx-auto mb-2" />
+                      Drop file here or click
+                      <div className="text-xs text-gray-500 mt-1">
+                        DXF, DWG, PDF
                       </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-800">{uploadedFile.name}</h3>
-                        <p className="text-gray-500">Size: {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="bg-gray-100 p-6 rounded-2xl inline-block">
-                        <Cloud className="w-16 h-16 text-gray-400 mx-auto" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-700 mb-2">Drag and drop file here</h3>
-                        <p className="text-gray-500 mb-4">Limit 200MB per file • DXF, DWG, PDF, PNG, JPG, JPEG</p>
-                        <button className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-3 rounded-xl font-medium hover:from-indigo-600 hover:to-purple-700 transition-all duration-200">
-                          Browse files
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {uploadedFile && (
-                  <div className="mt-8 bg-blue-50 rounded-2xl p-6">
-                    <h4 className="font-bold text-blue-800 mb-4">Getting Started:</h4>
-                    <ol className="list-decimal list-inside space-y-2 text-blue-700">
-                      <li>Upload your architectural floor plan (DXF, DWG, PDF, or image)</li>
-                      <li>Configure placement parameters in the Analysis section</li>
-                      <li>Run the optimization algorithm</li>
-                      <li>Review and export your results</li>
-                    </ol>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {activeView === 'analysis' && (
-            <div className="space-y-8">
-              {/* Configuration Panel */}
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-xl">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="bg-gradient-to-r from-blue-500 to-teal-500 p-3 rounded-xl">
-                    <Settings className="w-6 h-6 text-white" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-800">Configuration</h2>
-                </div>
-
-                <div className="grid grid-cols-2 gap-8">
-                  <div>
-                    <h3 className="font-bold text-gray-700 mb-4">Îlot Size Distribution</h3>
-                    <div className="space-y-4">
-                      {[
-                        { label: 'Micro (0-1m²)', value: 0.10, color: 'bg-red-400' },
-                        { label: 'Small (1-3m²)', value: 0.25, color: 'bg-orange-400' },
-                        { label: 'Medium (3-5m²)', value: 0.40, color: 'bg-yellow-400' },
-                        { label: 'Large (5-10m²)', value: 0.35, color: 'bg-green-400' }
-                      ].map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className={`w-4 h-4 rounded-full ${item.color}`}></div>
-                            <span className="text-gray-700">{item.label}</span>
-                          </div>
-                          <div className="flex items-center space-x-4">
-                            <div className="w-32 bg-gray-200 rounded-full h-2">
-                              <div className={`${item.color} h-2 rounded-full transition-all duration-300`} style={{ width: `${item.value * 100}%` }}></div>
-                            </div>
-                            <span className="text-sm font-medium text-gray-600 w-12">{(item.value * 100).toFixed(0)}%</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold text-gray-700 mb-4">Placement Parameters</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-600 mb-2">Corridor Width (mm)</label>
-                        <input
-                          type="number"
-                          value={corridorConfig.width}
-                          onChange={(e) => setCorridorConfig({...corridorConfig, width: parseInt(e.target.value) || 1200})}
-                          className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-600 mb-2">Min Clearance (mm)</label>
-                        <input
-                          type="number"
-                          value={corridorConfig.minClearance}
-                          onChange={(e) => setCorridorConfig({...corridorConfig, minClearance: parseInt(e.target.value) || 600})}
-                          className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-600 mb-2">Max Length (mm)</label>
-                        <input
-                          type="number"
-                          value={corridorConfig.maxLength}
-                          onChange={(e) => setCorridorConfig({...corridorConfig, maxLength: parseInt(e.target.value) || 15000})}
-                          className="w-full px-4 py-3 bg-white/80 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        />
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="checkbox"
-                          id="ada-compliant"
-                          checked={corridorConfig.accessibility}
-                          onChange={(e) => setCorridorConfig({...corridorConfig, accessibility: e.target.checked})}
-                          className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
-                        />
-                        <label htmlFor="ada-compliant" className="text-gray-700 font-medium">ADA Compliant Design</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Processing Steps */}
-                <div className="mt-8 pt-8 border-t border-gray-200">
-                  <h3 className="font-bold text-gray-700 mb-6">Processing Pipeline</h3>
-                  <div className="grid grid-cols-3 gap-6">
-                    {[
-                      { 
-                        step: 0, 
-                        title: 'Extract Floor Plan', 
-                        description: 'Parse architectural drawings',
-                        icon: FileText,
-                        action: () => processStep(0),
-                        disabled: !uploadedFile || processing
-                      },
-                      { 
-                        step: 1, 
-                        title: 'Optimize Îlots', 
-                        description: 'Apply placement algorithms',
-                        icon: Grid,
-                        action: () => processStep(1),
-                        disabled: !floorPlanData || processing
-                      },
-                      { 
-                        step: 2, 
-                        title: 'Generate Corridors', 
-                        description: 'Create circulation paths',
-                        icon: MapPin,
-                        action: () => processStep(2),
-                        disabled: !ilotData || processing
-                      }
-                    ].map((item, idx) => (
-                      <div key={idx} className={`p-6 rounded-2xl border-2 transition-all duration-200 ${
-                        currentStep > item.step 
-                          ? 'bg-green-50 border-green-200' 
-                          : currentStep === item.step 
-                            ? 'bg-blue-50 border-blue-200' 
-                            : 'bg-gray-50 border-gray-200'
-                      }`}>
-                        <div className="flex items-center justify-between mb-4">
-                          <item.icon className={`w-8 h-8 ${
-                            currentStep > item.step ? 'text-green-600' :
-                            currentStep === item.step ? 'text-blue-600' : 'text-gray-400'
-                          }`} />
-                          {currentStep > item.step && (
-                            <CheckCircle className="w-6 h-6 text-green-600" />
-                          )}
-                        </div>
-                        <h4 className="font-bold text-gray-800 mb-2">{item.title}</h4>
-                        <p className="text-gray-600 text-sm mb-4">{item.description}</p>
-                        <button
-                          onClick={item.action}
-                          disabled={item.disabled}
-                          className={`w-full py-3 rounded-xl font-medium transition-all duration-200 ${
-                            item.disabled
-                              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                              : currentStep > item.step
-                                ? 'bg-green-500 text-white hover:bg-green-600'
-                                : 'bg-indigo-500 text-white hover:bg-indigo-600'
-                          }`}
-                        >
-                          {currentStep > item.step ? 'Completed' : 'Process'}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                    </label>
+                  </label>
                 </div>
               </div>
 
-              {/* Processing Status */}
-              {processing && (
-                <div className="bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                    <div>
-                      <h4 className="font-bold text-gray-800">Processing in progress...</h4>
-                      <p className="text-gray-600">
-                        {currentStep === 0 ? 'Extracting floor plan from uploaded file...' :
-                         currentStep === 1 ? 'Optimizing îlot placement using AI algorithms...' :
-                         'Generating efficient corridor network...'}
-                      </p>
+              {/* Drawing Info */}
+              {selectedFile && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Drawing Info</h3>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">File:</span>
+                      <span className="text-white">{selectedFile.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Size:</span>
+                      <span className="text-white">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Status:</span>
+                      <span className={`${isProcessing ? 'text-yellow-400' : 'text-green-400'}`}>
+                        {isProcessing ? 'Processing...' : 'Ready'}
+                      </span>
                     </div>
                   </div>
-                  <div className="mt-4 bg-gray-200 rounded-full h-2">
-                    <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full transition-all duration-500" 
-                         style={{ width: `${((currentStep + 0.5) / 3) * 100}%` }}></div>
+                </div>
+              )}
+
+              {/* Analysis Results */}
+              {analysisResults && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Analysis Results</h3>
+                  <div className="space-y-3">
+                    <div className="bg-gray-800 rounded p-3 space-y-2">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">Space Utilization</span>
+                        <span className="text-white">{analysisResults.optimization.spaceUtilization.toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">Total Îlots</span>
+                        <span className="text-white">{analysisResults.optimization.totalIlots}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">Accessibility</span>
+                        <span className="text-white">{analysisResults.optimization.accessibilityScore.toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">Efficiency</span>
+                        <span className="text-white">{analysisResults.optimization.efficiency}%</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           )}
+        </div>
 
-          {activeView === 'results' && analysisResult && (
-            <div className="space-y-8">
-              {/* Results Overview */}
-              <div className="grid grid-cols-4 gap-6">
-                {[
-                  { label: 'Total Îlots', value: analysisResult.optimization.totalIlots, icon: Grid, color: 'text-blue-600' },
-                  { label: 'Space Utilization', value: `${analysisResult.optimization.spaceUtilization.toFixed(1)}%`, icon: TrendingUp, color: 'text-green-600' },
-                  { label: 'Efficiency Score', value: `${analysisResult.optimization.efficiency}%`, icon: Zap, color: 'text-yellow-600' },
-                  { label: 'Corridor Length', value: `${(analysisResult.optimization.totalCorridorLength / 1000).toFixed(1)}m`, icon: MapPin, color: 'text-purple-600' }
-                ].map((metric, idx) => (
-                  <div key={idx} className="bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
-                    <div className="flex items-center justify-between mb-3">
-                      <metric.icon className={`w-8 h-8 ${metric.color}`} />
-                    </div>
-                    <div className={`text-3xl font-bold ${metric.color} mb-1`}>{metric.value}</div>
-                    <p className="text-gray-600 font-medium">{metric.label}</p>
+        {/* Main Drawing Area */}
+        <div className="flex-1 bg-gray-100 relative overflow-hidden">
+          {/* Drawing Canvas */}
+          <div className="absolute inset-0">
+            {floorPlanData ? (
+              <div className="h-full w-full bg-white relative">
+                {showGrid && (
+                  <div className="absolute inset-0 opacity-20">
+                    <svg width="100%" height="100%" className="absolute inset-0">
+                      <defs>
+                        <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#666" strokeWidth="0.5"/>
+                        </pattern>
+                      </defs>
+                      <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+                    </svg>
                   </div>
-                ))}
+                )}
+                <ProfessionalFloorPlanRenderer
+                  floorPlan={floorPlanData}
+                  ilots={ilotData}
+                  corridors={corridorData}
+                  showIlots={currentStep >= 2}
+                  showCorridors={currentStep >= 3}
+                  scale={1.2}
+                />
               </div>
-
-              {/* Visualization */}
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-xl">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">Floor Plan Visualization</h2>
-                <div className="bg-white rounded-2xl p-4 shadow-inner min-h-96 flex items-center justify-center">
-                  {floorPlanData ? (
-                    <ProfessionalFloorPlanRenderer
-                      floorPlan={floorPlanData}
-                      ilots={ilotData || []}
-                      corridors={corridorData || []}
-                      showIlots={currentStep >= 2}
-                      showCorridors={currentStep >= 3}
-                      scale={1.0}
-                    />
-                  ) : (
-                    <div className="text-center text-gray-500">
-                      <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <p>No floor plan data available</p>
-                    </div>
-                  )}
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-600">
+                <div className="text-center">
+                  <FileText className="w-24 h-24 mx-auto mb-4 text-gray-300" />
+                  <h3 className="text-lg font-medium mb-2">No drawing loaded</h3>
+                  <p className="text-sm">Upload a CAD file to begin analysis</p>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {activeView === 'export' && analysisResult && (
-            <div className="space-y-8">
-              {/* Export Options */}
-              <div className="grid grid-cols-2 gap-8">
-                {[
-                  { 
-                    title: 'PDF Report', 
-                    description: 'Comprehensive analysis report with visualizations',
-                    icon: FileText,
-                    color: 'from-red-500 to-pink-500',
-                    action: () => handleExport('pdf')
-                  },
-                  { 
-                    title: 'DXF Drawing', 
-                    description: 'CAD-compatible drawing file for further editing',
-                    icon: Grid,
-                    color: 'from-blue-500 to-cyan-500',
-                    action: () => handleExport('dxf')
-                  },
-                  { 
-                    title: 'JSON Data', 
-                    description: 'Raw analysis data for custom applications',
-                    icon: Database,
-                    color: 'from-green-500 to-emerald-500',
-                    action: () => handleExport('json')
-                  },
-                  { 
-                    title: '3D Model', 
-                    description: '3D visualization model for presentations',
-                    icon: Monitor,
-                    color: 'from-purple-500 to-indigo-500',
-                    action: () => handleExport('3d')
-                  }
-                ].map((option, idx) => (
-                  <div key={idx} className="bg-white/70 backdrop-blur-md rounded-2xl p-8 border border-white/20 shadow-xl">
-                    <div className={`bg-gradient-to-r ${option.color} p-4 rounded-xl inline-block mb-4`}>
-                      <option.icon className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">{option.title}</h3>
-                    <p className="text-gray-600 mb-6">{option.description}</p>
-                    <button
-                      onClick={option.action}
-                      className={`w-full bg-gradient-to-r ${option.color} text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-200`}
-                    >
-                      Export {option.title}
-                    </button>
-                  </div>
-                ))}
+          {/* Status Bar */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 px-4 py-2">
+            <div className="flex items-center justify-between text-xs text-gray-400">
+              <div className="flex items-center space-x-4">
+                <span>Coordinate: 0.00, 0.00</span>
+                <span>Layer: 0</span>
+                <span>Color: By Layer</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button className="text-gray-400 hover:text-white">SNAP</button>
+                <button className="text-gray-400 hover:text-white">GRID</button>
+                <button className="text-gray-400 hover:text-white">ORTHO</button>
+                <button className="text-gray-400 hover:text-white">POLAR</button>
               </div>
             </div>
-          )}
+          </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className="bg-white/80 backdrop-blur-md border-t border-gray-200 px-8 py-4">
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <div className="flex items-center space-x-6">
-            <span>© 2025 Enterprise Îlot Placement System</span>
-            <span>Professional License</span>
+        {/* Right Analysis Panel */}
+        <div className={`bg-gray-850 border-l border-gray-600 transition-all duration-300 ${rightPanelCollapsed ? 'w-8' : 'w-80'} flex flex-col`}>
+          <div className="flex items-center justify-between p-3 border-b border-gray-700">
+            <button 
+              onClick={() => setRightPanelCollapsed(!rightPanelCollapsed)}
+              className="text-gray-400 hover:text-white p-1"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+            {!rightPanelCollapsed && <span className="font-medium text-sm">Analysis</span>}
           </div>
-          <div className="flex items-center space-x-4">
-            <span>Version 2.1.0</span>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>System Online</span>
+
+          {!rightPanelCollapsed && (
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+              {/* Progress */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Processing Status</h3>
+                <div className="space-y-2">
+                  <div className={`flex items-center space-x-2 text-xs ${currentStep >= 1 ? 'text-green-400' : 'text-gray-500'}`}>
+                    <div className={`w-3 h-3 rounded-full ${currentStep >= 1 ? 'bg-green-500' : 'bg-gray-600'}`}></div>
+                    <span>Floor Plan Loaded</span>
+                  </div>
+                  <div className={`flex items-center space-x-2 text-xs ${currentStep >= 2 ? 'text-green-400' : 'text-gray-500'}`}>
+                    <div className={`w-3 h-3 rounded-full ${currentStep >= 2 ? 'bg-green-500' : 'bg-gray-600'}`}></div>
+                    <span>Îlots Optimized</span>
+                  </div>
+                  <div className={`flex items-center space-x-2 text-xs ${currentStep >= 3 ? 'text-green-400' : 'text-gray-500'}`}>
+                    <div className={`w-3 h-3 rounded-full ${currentStep >= 3 ? 'bg-green-500' : 'bg-gray-600'}`}></div>
+                    <span>Corridors Generated</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Export Options */}
+              {analysisResults && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Export</h3>
+                  <div className="space-y-2">
+                    <button className="w-full bg-gray-700 hover:bg-gray-600 text-white text-xs py-2 px-3 rounded transition-colors">
+                      Export DXF
+                    </button>
+                    <button className="w-full bg-gray-700 hover:bg-gray-600 text-white text-xs py-2 px-3 rounded transition-colors">
+                      Export PDF
+                    </button>
+                    <button className="w-full bg-gray-700 hover:bg-gray-600 text-white text-xs py-2 px-3 rounded transition-colors">
+                      Export Analysis Report
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,28 +1,35 @@
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "bash", "web", "python-3.11"]
 
 [nix]
 channel = "stable-24_05"
 
 [deployment]
-deploymentTarget = "static"
-build = ["npx", "vite", "build"]
+deploymentTarget = "autoscale"
+build = ["npm", "run", "build"]
 publicDir = "dist"
+run = ["npm", "run", "start"]
 
 [workflows]
-runButton = "React Dev Server"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Project"
 mode = "parallel"
 author = "agent"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start Game"
+
 [[workflows.workflow]]
-name = "React Dev Server"
+name = "Start Game"
 mode = "sequential"
+author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npx vite --host 0.0.0.0 --port 5000"
+args = "npm run dev"
+waitForPort = 5000
 
 [[workflows.workflow]]
 name = "Build App"

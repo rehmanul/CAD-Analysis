@@ -63,6 +63,10 @@ A comprehensive CAD analysis application built with React, TypeScript, and Tailw
 - **CRITICAL**: Interface must match professional CAD software appearance (no basic/demo/simplified interfaces)
 - Avoid simplification/demo/fallback/fake/basic/mocks strictly
 - Industry-standard CAD software UI/UX patterns and design
+- **NEW REQUIREMENT**: Create comprehensive enterprise-grade prompt for Replit Agent single-execution deployment
+- Must be real-world industry-grade enterprise version with attractive modern design
+- Complete features with nothing basic or poor quality
+- Single comprehensive prompt that creates everything at once
 
 ## Development Notes
 - Main component: `src/CADAnalysisApp.tsx`

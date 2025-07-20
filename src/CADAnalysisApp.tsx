@@ -1,11 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { 
-  Upload, FileText, Grid, MapPin, Download, CheckCircle, Settings, BarChart3, 
-  Layers, Eye, Save, FolderOpen, Maximize2, ZoomIn, ZoomOut, 
-  Square, Circle, Minus, MoreHorizontal, X, Minimize2, Target,
-  MousePointer, Hand, Copy, Scissors, Undo, Redo,
-  Monitor, Printer, Calculator, Ruler, Cloud, Zap, Users, Shield,
-  TrendingUp, Activity, Database, Cpu, HardDrive, Network
+  FileText, Grid, MapPin, Download, CheckCircle, Settings, BarChart3, 
+  Cloud, Zap, Users, Shield, TrendingUp, Activity, Database, 
+  Cpu, HardDrive, Network, Monitor
 } from 'lucide-react';
 import { CADProcessor } from './utils/cadProcessor';
 import { IlotOptimizer } from './utils/ilotOptimizer';

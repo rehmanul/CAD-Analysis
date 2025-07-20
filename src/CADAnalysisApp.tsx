@@ -5,6 +5,7 @@ import { IlotOptimizer } from './utils/ilotOptimizer';
 import { CorridorGenerator, CorridorConfig } from './utils/corridorGenerator';
 import { ExportManager } from './utils/exportManager';
 import { FloorPlan, Ilot, Corridor, CADAnalysisResult } from './types/cad';
+import ProfessionalFloorPlanRenderer from './components/ProfessionalFloorPlanRenderer';
 
 const CADAnalysisApp = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -109,198 +110,7 @@ const CADAnalysisApp = () => {
     }
   };
 
-  const ProfessionalCADVisualization = () => (
-    <div className="card w-full animate-fade-in">
-      <div className="card-header">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <BarChart3 className="w-6 h-6 text-blue-600" />
-            <div>
-              <h3 className="text-lg font-bold text-gray-900">
-                {uploadedFile?.name || 'Floor Plan Analysis'}
-              </h3>
-              <p className="text-sm text-gray-600">Interactive CAD visualization with real-time analysis</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-xs text-gray-500 font-mono bg-gray-200 px-2 py-1 rounded">
-              Scale: 1:100 | Unit: mm
-            </div>
-            <div className="text-xs text-gray-500 mt-1">Updated: {new Date().toLocaleTimeString()}</div>
-          </div>
-        </div>
-      </div>
 
-      <div className="p-6 bg-gradient-to-br from-gray-50 to-white">
-        <svg 
-        width="100%" 
-        height="600" 
-        viewBox="0 0 800 600" 
-        className="bg-white"
-        style={{ fontFamily: 'monospace' }}
-      >
-        {/* Grid background */}
-        <defs>
-          <pattern id="smallGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#f0f0f0" strokeWidth="0.5"/>
-          </pattern>
-          <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-            <rect width="100" height="100" fill="url(#smallGrid)"/>
-            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#e0e0e0" strokeWidth="1"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" />
-
-        {floorPlanData && (
-          <>
-            {/* Walls - Clean black lines */}
-            {floorPlanData.walls.map((wall, idx) => (
-              <line
-                key={idx}
-                x1={wall.start.x / 20}
-                y1={wall.start.y / 20}
-                x2={wall.end.x / 20}
-                y2={wall.end.y / 20}
-                stroke="#000000"
-                strokeWidth="3"
-                strokeLinecap="square"
-              />
-            ))}
-
-            {/* Restricted Areas - Blue zones */}
-            {floorPlanData.restrictedAreas.map((area, idx) => {
-              const bounds = area.bounds;
-              if (bounds.length >= 4) {
-                const minX = Math.min(...bounds.map(p => p.x)) / 20;
-                const minY = Math.min(...bounds.map(p => p.y)) / 20;
-                const maxX = Math.max(...bounds.map(p => p.x)) / 20;
-                const maxY = Math.max(...bounds.map(p => p.y)) / 20;
-                return (
-                  <g key={idx}>
-                    <rect
-                      x={minX}
-                      y={minY}
-                      width={maxX - minX}
-                      height={maxY - minY}
-                      fill="#4A90E2"
-                      fillOpacity="0.3"
-                      stroke="#4A90E2"
-                      strokeWidth="1"
-                    />
-                    <text
-                      x={minX + (maxX - minX) / 2}
-                      y={minY + (maxY - minY) / 2}
-                      textAnchor="middle"
-                      fontSize="10"
-                      fill="#4A90E2"
-                      fontWeight="bold"
-                    >
-                      NO ENTRÉE
-                    </text>
-                  </g>
-                );
-              }
-              return null;
-            })}
-
-            {/* Doors - Red entrance markers */}
-            {floorPlanData.doors.map((door, idx) => (
-              <g key={idx}>
-                <rect
-                  x={door.position.x / 20 - door.width / 40}
-                  y={door.position.y / 20 - door.height / 40}
-                  width={door.width / 20}
-                  height={door.height / 20}
-                  fill="#E74C3C"
-                  stroke="#E74C3C"
-                  strokeWidth="2"
-                />
-                <text
-                  x={door.position.x / 20}
-                  y={door.position.y / 20 + 15}
-                  textAnchor="middle"
-                  fontSize="8"
-                  fill="#E74C3C"
-                  fontWeight="bold"
-                >
-                  ENTRÉE/SORTIE
-                </text>
-              </g>
-            ))}
-          </>
-        )}
-
-        {/* Îlots - Pink rectangles with area labels */}
-        {ilotData && ilotData.map((ilot, idx) => (
-          <g key={idx}>
-            <rect
-              x={ilot.position.x / 20 - ilot.width / 40}
-              y={ilot.position.y / 20 - ilot.height / 40}
-              width={ilot.width / 20}
-              height={ilot.height / 20}
-              fill="#FF69B4"
-              fillOpacity="0.4"
-              stroke="#E91E63"
-              strokeWidth="1"
-            />
-            <text
-              x={ilot.position.x / 20}
-              y={ilot.position.y / 20}
-              textAnchor="middle"
-              fontSize="9"
-              fill="#000"
-              fontWeight="bold"
-            >
-              {(ilot.area / 1000000).toFixed(1)}m²
-            </text>
-          </g>
-        ))}
-
-        {/* Corridors - Pink pathways */}
-        {corridorData && corridorData.map((corridor, idx) => {
-          return corridor.path.map((point, pointIdx) => {
-            if (pointIdx < corridor.path.length - 1) {
-              const nextPoint = corridor.path[pointIdx + 1];
-              return (
-                <line
-                  key={`${idx}-${pointIdx}`}
-                  x1={point.x / 20}
-                  y1={point.y / 20}
-                  x2={nextPoint.x / 20}
-                  y2={nextPoint.y / 20}
-                  stroke="#FF1493"
-                  strokeWidth={Math.max(2, corridor.width / 200)}
-                  strokeLinecap="round"
-                />
-              );
-            }
-            return null;
-          });
-        })}
-
-        {/* Legend */}
-        <g transform="translate(650, 50)">
-          <rect x="0" y="0" width="140" height="120" fill="white" stroke="black" strokeWidth="1"/>
-
-          <rect x="10" y="15" width="15" height="10" fill="#4A90E2" fillOpacity="0.3"/>
-          <text x="30" y="24" fontSize="10" fill="black">NO ENTRÉE</text>
-
-          <rect x="10" y="35" width="15" height="10" fill="#E74C3C"/>
-          <text x="30" y="44" fontSize="10" fill="black">ENTRÉE/SORTIE</text>
-
-          <rect x="10" y="55" width="15" height="10" fill="#000" stroke="none"/>
-          <text x="30" y="64" fontSize="10" fill="black">MUR</text>
-
-          <rect x="10" y="75" width="15" height="10" fill="#FF69B4" fillOpacity="0.4"/>
-          <text x="30" y="84" fontSize="10" fill="black">ÎLOTS</text>
-
-          <line x1="10" y1="100" x2="25" y2="100" stroke="#FF1493" strokeWidth="3"/>
-          <text x="30" y="104" fontSize="10" fill="black">CORRIDORS</text>
-        </g>
-        </svg>
-      </div>
-    </div>
-  );
 
   const handleExport = async (format: string) => {
     if (!analysisResult) {
@@ -661,7 +471,23 @@ const CADAnalysisApp = () => {
         )}
 
         {/* Professional CAD Visualization */}
-        {floorPlanData && <ProfessionalCADVisualization />}
+        {/* Professional Floor Plan Visualization */}
+        {floorPlanData && (
+          <div className="card animate-fade-in">
+            <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Grid className="w-6 h-6 text-blue-600" />
+              Professional Floor Plan Analysis
+            </h3>
+            <ProfessionalFloorPlanRenderer
+              floorPlan={floorPlanData}
+              ilots={ilotData || []}
+              corridors={corridorData || []}
+              showIlots={currentStep >= 2}
+              showCorridors={currentStep >= 3}
+              scale={0.8}
+            />
+          </div>
+        )}
 
         {/* Enhanced Analysis Results */}
         {analysisResult && (

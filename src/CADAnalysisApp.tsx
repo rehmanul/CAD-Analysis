@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, FileText, Play, Grid, MapPin, Download, CheckCircle, Settings, BarChart3, Zap, Menu, Layers, Eye } from 'lucide-react';
+import { Upload, FileText, Play, Grid, MapPin, Download, CheckCircle, Settings, BarChart3, Layers, Eye, Save, FolderOpen, Maximize2, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import { CADProcessor } from './utils/cadProcessor';
 import { IlotOptimizer } from './utils/ilotOptimizer';
 import { CorridorGenerator, CorridorConfig } from './utils/corridorGenerator';
@@ -157,13 +157,30 @@ const CADAnalysisApp = () => {
             </div>
           </div>
           
-          {/* Center - Menu bar like CAD software */}
-          <div className="flex items-center gap-1 bg-gray-700 rounded p-1">
-            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">File</button>
-            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">Edit</button>
-            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">View</button>
-            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">Tools</button>
-            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">Analysis</button>
+          {/* Center - Professional CAD toolbar */}
+          <div className="flex items-center gap-2 bg-gray-750 px-4 py-2 rounded border border-gray-600">
+            <button className="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-all" title="New">
+              <FileText className="w-4 h-4" />
+            </button>
+            <button className="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-all" title="Open">
+              <FolderOpen className="w-4 h-4" />
+            </button>
+            <button className="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-all" title="Save">
+              <Save className="w-4 h-4" />
+            </button>
+            <div className="w-px h-6 bg-gray-600 mx-1"></div>
+            <button className="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-all" title="Zoom In">
+              <ZoomIn className="w-4 h-4" />
+            </button>
+            <button className="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-all" title="Zoom Out">
+              <ZoomOut className="w-4 h-4" />
+            </button>
+            <button className="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-all" title="Fit to Screen">
+              <Maximize2 className="w-4 h-4" />
+            </button>
+            <button className="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-all" title="Reset View">
+              <RotateCcw className="w-4 h-4" />
+            </button>
           </div>
           
           {/* Right side - Status */}
@@ -176,28 +193,43 @@ const CADAnalysisApp = () => {
           </div>
         </div>
         
-        {/* Toolbar */}
+        {/* Analysis Pipeline Status Bar */}
         <div className="bg-gray-750 border-t border-gray-700 px-4 py-2">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${currentStep >= 0 ? 'bg-green-600' : 'bg-gray-600'}`}>
-                <FileText className="w-3 h-3" />
-                <span>Extract</span>
-              </div>
-              <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${currentStep >= 1 ? 'bg-green-600' : currentStep === 0 ? 'bg-blue-600' : 'bg-gray-600'}`}>
-                <Grid className="w-3 h-3" />
-                <span>Optimize</span>
-              </div>
-              <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${currentStep >= 2 ? 'bg-green-600' : currentStep === 1 ? 'bg-blue-600' : 'bg-gray-600'}`}>
-                <MapPin className="w-3 h-3" />
-                <span>Generate</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="text-gray-300 text-sm font-medium">Analysis Pipeline:</span>
+              <div className="flex items-center gap-2">
+                <div className={`flex items-center gap-2 px-3 py-1 rounded text-xs font-medium ${currentStep >= 0 ? 'bg-green-600/20 text-green-400 border border-green-600/30' : 'bg-gray-700 text-gray-400'}`}>
+                  <FileText className="w-3 h-3" />
+                  <span>Extract Floor Plan</span>
+                  {currentStep >= 0 && <CheckCircle className="w-3 h-3" />}
+                </div>
+                <div className="w-2 h-px bg-gray-600"></div>
+                <div className={`flex items-center gap-2 px-3 py-1 rounded text-xs font-medium ${currentStep >= 1 ? 'bg-green-600/20 text-green-400 border border-green-600/30' : currentStep === 0 ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30' : 'bg-gray-700 text-gray-400'}`}>
+                  <Grid className="w-3 h-3" />
+                  <span>Optimize Îlots</span>
+                  {currentStep >= 1 && <CheckCircle className="w-3 h-3" />}
+                </div>
+                <div className="w-2 h-px bg-gray-600"></div>
+                <div className={`flex items-center gap-2 px-3 py-1 rounded text-xs font-medium ${currentStep >= 2 ? 'bg-green-600/20 text-green-400 border border-green-600/30' : currentStep === 1 ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30' : 'bg-gray-700 text-gray-400'}`}>
+                  <MapPin className="w-3 h-3" />
+                  <span>Generate Corridors</span>
+                  {currentStep >= 2 && <CheckCircle className="w-3 h-3" />}
+                </div>
               </div>
             </div>
             
             {processing && (
-              <div className="flex items-center gap-2 ml-4 px-2 py-1 bg-blue-900/30 rounded border border-blue-600/30">
-                <div className="w-3 h-3 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-blue-400 text-xs">Processing...</span>
+              <div className="flex items-center gap-2 px-3 py-1 bg-orange-600/20 rounded border border-orange-600/30">
+                <div className="w-3 h-3 border-2 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-orange-400 text-xs font-medium">Processing...</span>
+              </div>
+            )}
+            
+            {analysisResult && (
+              <div className="flex items-center gap-2 px-3 py-1 bg-green-600/20 rounded border border-green-600/30">
+                <CheckCircle className="w-3 h-3 text-green-400" />
+                <span className="text-green-400 text-xs font-medium">Analysis Complete</span>
               </div>
             )}
           </div>
@@ -443,51 +475,120 @@ const CADAnalysisApp = () => {
         {/* Main Viewport - CAD Drawing Area */}
         <div className="flex-1 bg-gray-850 overflow-hidden">
           <div className="h-full flex flex-col">
-            {/* Viewport Header */}
+            {/* Professional Viewport Header */}
             <div className="bg-gray-800 border-b border-gray-700 px-4 py-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <h3 className="text-white font-medium">Floor Plan Analysis</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <h3 className="text-white font-medium">Model Space - Floor Plan Analysis</h3>
+                  </div>
                   {floorPlanData && (
-                    <div className="flex items-center gap-2 text-gray-400 text-sm">
-                      <Layers className="w-4 h-4" />
-                      <span>Scale: 1:100</span>
+                    <div className="flex items-center gap-4 text-gray-400 text-xs">
+                      <div className="flex items-center gap-1">
+                        <Layers className="w-3 h-3" />
+                        <span>Layer: Floor Plan</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span>Scale: 1:100</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span>Units: mm</span>
+                      </div>
                     </div>
                   )}
                 </div>
                 
-                {floorPlanData && (
-                  <div className="flex items-center gap-2">
-                    <button className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs text-white">
-                      <Eye className="w-3 h-3" />
-                    </button>
-                    <button className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs text-white">
-                      Zoom Fit
-                    </button>
-                  </div>
-                )}
+                <div className="flex items-center gap-2">
+                  {floorPlanData && (
+                    <>
+                      <button className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs text-white flex items-center gap-1">
+                        <Eye className="w-3 h-3" />
+                        <span>Layers</span>
+                      </button>
+                      <button className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs text-white">
+                        Zoom Extents
+                      </button>
+                      <div className="text-gray-400 text-xs">
+                        Cursor: 0,0
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Main Drawing Area */}
-            <div className="flex-1 p-4">
+            {/* Professional CAD Drawing Area */}
+            <div className="flex-1 relative">
               {floorPlanData ? (
-                <div className="h-full bg-white rounded border border-gray-600 overflow-hidden">
-                  <ProfessionalFloorPlanRenderer
-                    floorPlan={floorPlanData}
-                    ilots={ilotData || []}
-                    corridors={corridorData || []}
-                    showIlots={currentStep >= 2}
-                    showCorridors={currentStep >= 3}
-                    scale={0.8}
-                  />
+                <div className="h-full bg-gray-900 relative overflow-hidden">
+                  {/* Grid background like CAD software */}
+                  <div className="absolute inset-0 bg-gray-900" style={{
+                    backgroundImage: `
+                      linear-gradient(to right, rgba(75, 85, 99, 0.3) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(75, 85, 99, 0.3) 1px, transparent 1px)
+                    `,
+                    backgroundSize: '20px 20px'
+                  }}>
+                  </div>
+                  
+                  {/* UCS (User Coordinate System) icon */}
+                  <div className="absolute bottom-4 left-4 z-10">
+                    <div className="bg-gray-800/90 p-2 rounded border border-gray-600">
+                      <div className="relative w-8 h-8">
+                        <div className="absolute bottom-0 left-0 w-6 h-px bg-red-400"></div>
+                        <div className="absolute bottom-0 left-0 w-px h-6 bg-green-400"></div>
+                        <span className="absolute -bottom-1 left-7 text-red-400 text-xs">X</span>
+                        <span className="absolute -left-1 top-0 text-green-400 text-xs">Y</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* ViewCube like in professional CAD */}
+                  <div className="absolute top-4 right-4 z-10">
+                    <div className="bg-gray-800/90 p-3 rounded border border-gray-600">
+                      <div className="grid grid-cols-3 gap-1">
+                        <div className="w-4 h-4 bg-gray-700 hover:bg-gray-600 border border-gray-500 text-xs flex items-center justify-center text-gray-300 cursor-pointer">NW</div>
+                        <div className="w-4 h-4 bg-gray-600 hover:bg-gray-500 border border-gray-500 text-xs flex items-center justify-center text-white cursor-pointer">N</div>
+                        <div className="w-4 h-4 bg-gray-700 hover:bg-gray-600 border border-gray-500 text-xs flex items-center justify-center text-gray-300 cursor-pointer">NE</div>
+                        <div className="w-4 h-4 bg-gray-600 hover:bg-gray-500 border border-gray-500 text-xs flex items-center justify-center text-white cursor-pointer">W</div>
+                        <div className="w-4 h-4 bg-blue-600 hover:bg-blue-500 border border-blue-500 text-xs flex items-center justify-center text-white cursor-pointer">T</div>
+                        <div className="w-4 h-4 bg-gray-600 hover:bg-gray-500 border border-gray-500 text-xs flex items-center justify-center text-white cursor-pointer">E</div>
+                        <div className="w-4 h-4 bg-gray-700 hover:bg-gray-600 border border-gray-500 text-xs flex items-center justify-center text-gray-300 cursor-pointer">SW</div>
+                        <div className="w-4 h-4 bg-gray-600 hover:bg-gray-500 border border-gray-500 text-xs flex items-center justify-center text-white cursor-pointer">S</div>
+                        <div className="w-4 h-4 bg-gray-700 hover:bg-gray-600 border border-gray-500 text-xs flex items-center justify-center text-gray-300 cursor-pointer">SE</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Floor plan renderer */}
+                  <div className="relative z-0 h-full p-8">
+                    <div className="h-full bg-white rounded border-2 border-gray-600 shadow-2xl overflow-hidden">
+                      <ProfessionalFloorPlanRenderer
+                        floorPlan={floorPlanData}
+                        ilots={ilotData || []}
+                        corridors={corridorData || []}
+                        showIlots={currentStep >= 2}
+                        showCorridors={currentStep >= 3}
+                        scale={0.8}
+                      />
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div className="h-full flex items-center justify-center">
+                <div className="h-full bg-gray-900 flex items-center justify-center">
                   <div className="text-center">
-                    <FileText className="w-16 h-16 mx-auto text-gray-600 mb-4" />
-                    <h3 className="text-gray-400 text-lg font-medium mb-2">No Floor Plan Loaded</h3>
-                    <p className="text-gray-500 text-sm">Upload a CAD file to begin analysis</p>
+                    <div className="mb-6">
+                      <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-800 border-2 border-dashed border-gray-600 flex items-center justify-center">
+                        <FileText className="w-12 h-12 text-gray-600" />
+                      </div>
+                    </div>
+                    <h3 className="text-gray-400 text-xl font-medium mb-2">Model Space Empty</h3>
+                    <p className="text-gray-500 text-sm mb-4">No floor plan loaded</p>
+                    <div className="text-gray-600 text-xs">
+                      <p>Supported formats: DXF, DWG, PDF</p>
+                      <p>Use the File Operations panel to upload your CAD file</p>
+                    </div>
                   </div>
                 </div>
               )}

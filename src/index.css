@@ -200,3 +200,12 @@ body {
 .btn-accent:hover {
   @apply shadow-2xl transform translate-y-[-1px];
 }
+
+/* CAD Software specific colors */
+.bg-gray-750 {
+  background-color: #3a4151;
+}
+
+.bg-gray-850 {
+  background-color: #1f2332;
+}

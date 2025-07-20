@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, FileText, Play, Grid, MapPin, Download, CheckCircle, Clock, Settings, BarChart3, Zap } from 'lucide-react';
+import { Upload, FileText, Play, Grid, MapPin, Download, CheckCircle, Settings, BarChart3, Zap, Menu, Layers, Eye } from 'lucide-react';
 import { CADProcessor } from './utils/cadProcessor';
 import { IlotOptimizer } from './utils/ilotOptimizer';
 import { CorridorGenerator, CorridorConfig } from './utils/corridorGenerator';
@@ -110,8 +110,6 @@ const CADAnalysisApp = () => {
     }
   };
 
-
-
   const handleExport = async (format: string) => {
     if (!analysisResult) {
       alert('Please complete the analysis first');
@@ -144,129 +142,352 @@ const CADAnalysisApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Enhanced Modern Header */}
-      <div className="glass sticky top-0 z-50 px-6 py-4 border-b border-white/20 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="relative group">
-                <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 p-3 rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-300">
-                  <FileText className="w-7 h-7 text-white" />
-                </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Professional CAD-style Header */}
+      <div className="bg-gray-800 border-b border-gray-700 shadow-xl">
+        <div className="flex items-center justify-between px-4 py-2">
+          {/* Left side - Logo and title */}
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 p-2 rounded shadow-lg">
+              <FileText className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-white font-bold">CAD Analysis Pro</h1>
+              <p className="text-gray-400 text-xs">Professional Floor Plan Analysis</p>
+            </div>
+          </div>
+          
+          {/* Center - Menu bar like CAD software */}
+          <div className="flex items-center gap-1 bg-gray-700 rounded p-1">
+            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">File</button>
+            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">Edit</button>
+            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">View</button>
+            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">Tools</button>
+            <button className="px-3 py-1 text-white hover:bg-gray-600 rounded text-sm">Analysis</button>
+          </div>
+          
+          {/* Right side - Status */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-green-900/30 px-2 py-1 rounded border border-green-600/30">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-green-400 text-xs">AI Ready</span>
+            </div>
+            <span className="text-gray-400 text-xs">v2.1.0</span>
+          </div>
+        </div>
+        
+        {/* Toolbar */}
+        <div className="bg-gray-750 border-t border-gray-700 px-4 py-2">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${currentStep >= 0 ? 'bg-green-600' : 'bg-gray-600'}`}>
+                <FileText className="w-3 h-3" />
+                <span>Extract</span>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
-                  CAD Analysis Pro
-                </h1>
-                <p className="text-gray-600 text-sm font-medium">Intelligent Floor Plan Analysis & Space Optimization</p>
+              <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${currentStep >= 1 ? 'bg-green-600' : currentStep === 0 ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                <Grid className="w-3 h-3" />
+                <span>Optimize</span>
+              </div>
+              <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${currentStep >= 2 ? 'bg-green-600' : currentStep === 1 ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                <MapPin className="w-3 h-3" />
+                <span>Generate</span>
               </div>
             </div>
             
-            {/* Enhanced Progress Indicator */}
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
-                <div className={`progress-dot ${currentStep >= 0 ? 'completed' : 'pending'}`}>
-                  <FileText className="w-4 h-4" />
-                </div>
-                <div className={`progress-line ${currentStep >= 1 ? 'completed' : 'pending'}`}></div>
-                <div className={`progress-dot ${currentStep >= 1 ? 'completed' : currentStep === 0 ? 'active' : 'pending'}`}>
-                  <Grid className="w-4 h-4" />
-                </div>
-                <div className={`progress-line ${currentStep >= 2 ? 'completed' : 'pending'}`}></div>
-                <div className={`progress-dot ${currentStep >= 2 ? 'completed' : currentStep === 1 ? 'active' : 'pending'}`}>
-                  <MapPin className="w-4 h-4" />
-                </div>
+            {processing && (
+              <div className="flex items-center gap-2 ml-4 px-2 py-1 bg-blue-900/30 rounded border border-blue-600/30">
+                <div className="w-3 h-3 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-blue-400 text-xs">Processing...</span>
               </div>
-              
-              <div className="text-right">
-                <div className="flex items-center gap-2 text-emerald-600 text-sm font-semibold">
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                  AI Ready
-                </div>
-                <div className="text-xs text-gray-500 font-mono">v2.1.0</div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6">
-        {/* Enhanced File Upload Section */}
-        <div className="card animate-fade-in mb-8 overflow-hidden">
-          <div className="card-header bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Upload className="w-5 h-5 text-blue-600" />
+      {/* Main Layout */}
+      <div className="flex" style={{ height: 'calc(100vh - 120px)' }}>
+        {/* Left Panel - Properties like CAD software */}
+        <div className="w-80 bg-gray-800 border-r border-gray-700 overflow-y-auto">
+          <div className="p-4 space-y-4">
+            {/* File Upload Panel */}
+            <div className="bg-gray-750 rounded border border-gray-600">
+              <div className="bg-gray-700 px-3 py-2 border-b border-gray-600">
+                <div className="flex items-center gap-2">
+                  <Upload className="w-4 h-4 text-blue-400" />
+                  <span className="text-white text-sm font-medium">File Operations</span>
+                </div>
               </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">Upload CAD File</h2>
-                <p className="text-sm text-gray-600">Drag & drop or click to upload • DXF, DWG, PDF supported</p>
+              
+              <div className="p-4">
+                <div 
+                  className={`border-2 border-dashed rounded p-4 text-center cursor-pointer transition-all ${
+                    uploadedFile 
+                      ? 'border-green-500 bg-green-900/10' 
+                      : 'border-gray-500 hover:border-blue-500 hover:bg-blue-900/10'
+                  }`}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".dxf,.dwg,.pdf"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  
+                  {uploadedFile ? (
+                    <div>
+                      <FileText className="w-8 h-8 mx-auto text-green-400 mb-2" />
+                      <p className="text-white text-sm font-medium">{uploadedFile.name}</p>
+                      <p className="text-gray-400 text-xs">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                      <p className="text-white text-sm">Drop CAD file here</p>
+                      <p className="text-gray-400 text-xs">DXF, DWG, PDF</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div className="p-6">
-            <div 
-              className={`relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-500 group ${
-                uploadedFile 
-                  ? 'border-emerald-400 bg-gradient-to-br from-emerald-50 to-green-50 shadow-lg' 
-                  : 'border-gray-300 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 hover:shadow-xl'
-              }`}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".dxf,.dwg,.pdf"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-              
-              {uploadedFile ? (
-                <div className="animate-slide-in">
-                  <div className="relative inline-block mb-4">
-                    <div className="bg-gradient-to-br from-emerald-100 to-green-100 p-4 rounded-2xl">
-                      <FileText className="w-12 h-12 mx-auto text-emerald-600" />
-                    </div>
-                    <CheckCircle className="w-6 h-6 text-emerald-500 absolute -top-1 -right-1 bg-white rounded-full shadow-lg" />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">{uploadedFile.name}</h3>
-                  <div className="flex items-center justify-center gap-6 text-sm">
-                    <span className="flex items-center gap-2 bg-white/80 px-3 py-1 rounded-full">
-                      <BarChart3 className="w-4 h-4 text-blue-500" />
-                      <span className="font-medium text-gray-700">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</span>
-                    </span>
-                    <span className="flex items-center gap-2 bg-emerald-100 px-3 py-1 rounded-full">
-                      <CheckCircle className="w-4 h-4 text-emerald-600" />
-                      <span className="font-medium text-emerald-700">Ready to Process</span>
-                    </span>
+
+            {/* Configuration Panel */}
+            {uploadedFile && (
+              <div className="bg-gray-750 rounded border border-gray-600">
+                <div className="bg-gray-700 px-3 py-2 border-b border-gray-600">
+                  <div className="flex items-center gap-2">
+                    <Settings className="w-4 h-4 text-orange-400" />
+                    <span className="text-white text-sm font-medium">Parameters</span>
                   </div>
                 </div>
-              ) : (
-                <div>
-                  <div className="relative inline-block mb-6">
-                    <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-6 rounded-3xl group-hover:from-blue-200 group-hover:to-indigo-200 transition-all duration-300">
-                      <Upload className="w-12 h-12 mx-auto text-blue-600 group-hover:scale-110 transition-transform duration-300" />
-                    </div>
-                    <div className="absolute inset-0 bg-blue-400 rounded-3xl opacity-20 group-hover:animate-ping"></div>
+                
+                <div className="p-4 space-y-3">
+                  <div>
+                    <label className="block text-gray-300 text-xs mb-1">Corridor Width (mm)</label>
+                    <input
+                      type="number"
+                      value={corridorConfig.width}
+                      onChange={(e) => setCorridorConfig({
+                        ...corridorConfig,
+                        width: parseInt(e.target.value) || 1200
+                      })}
+                      className="w-full px-2 py-1 bg-gray-600 border border-gray-500 rounded text-white text-sm"
+                      min="800"
+                      max="3000"
+                    />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Drag & Drop Your CAD File</h3>
-                  <p className="text-gray-600 mb-6">Or click anywhere to browse and select your file</p>
-                  <div className="flex items-center justify-center gap-4 text-sm">
-                    <span className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-full border border-blue-200">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span className="font-medium text-blue-700">DXF</span>
-                    </span>
-                    <span className="flex items-center gap-2 bg-green-50 px-3 py-2 rounded-full border border-green-200">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span className="font-medium text-green-700">DWG</span>
-                    </span>
-                    <span className="flex items-center gap-2 bg-red-50 px-3 py-2 rounded-full border border-red-200">
-                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <span className="font-medium text-red-700">PDF</span>
-                    </span>
+                  
+                  <div>
+                    <label className="block text-gray-300 text-xs mb-1">Min Clearance (mm)</label>
+                    <input
+                      type="number"
+                      value={corridorConfig.minClearance}
+                      onChange={(e) => setCorridorConfig({
+                        ...corridorConfig,
+                        minClearance: parseInt(e.target.value) || 600
+                      })}
+                      className="w-full px-2 py-1 bg-gray-600 border border-gray-500 rounded text-white text-sm"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-gray-300 text-xs mb-1">Max Length (mm)</label>
+                    <input
+                      type="number"
+                      value={corridorConfig.maxLength}
+                      onChange={(e) => setCorridorConfig({
+                        ...corridorConfig,
+                        maxLength: parseInt(e.target.value) || 15000
+                      })}
+                      className="w-full px-2 py-1 bg-gray-600 border border-gray-500 rounded text-white text-sm"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="accessibility"
+                      checked={corridorConfig.accessibility}
+                      onChange={(e) => setCorridorConfig({
+                        ...corridorConfig,
+                        accessibility: e.target.checked
+                      })}
+                      className="rounded"
+                    />
+                    <label htmlFor="accessibility" className="text-gray-300 text-xs">ADA Compliant</label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Process Controls */}
+            {uploadedFile && (
+              <div className="bg-gray-750 rounded border border-gray-600">
+                <div className="bg-gray-700 px-3 py-2 border-b border-gray-600">
+                  <div className="flex items-center gap-2">
+                    <Play className="w-4 h-4 text-green-400" />
+                    <span className="text-white text-sm font-medium">Processing</span>
+                  </div>
+                </div>
+                
+                <div className="p-4 space-y-2">
+                  <button
+                    onClick={() => processStep(0)}
+                    disabled={processing}
+                    className={`w-full flex items-center gap-2 px-3 py-2 rounded text-sm transition-all ${
+                      processing && currentStep === 0 
+                        ? 'bg-blue-600 text-white' 
+                        : currentStep >= 1 
+                        ? 'bg-green-600 text-white' 
+                        : 'bg-gray-600 text-gray-300 hover:bg-gray-500'
+                    }`}
+                  >
+                    {processing && currentStep === 0 ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : currentStep >= 1 ? (
+                      <CheckCircle className="w-4 h-4" />
+                    ) : (
+                      <FileText className="w-4 h-4" />
+                    )}
+                    <span>{processing && currentStep === 0 ? 'Processing...' : 'Extract Floor Plan'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => processStep(1)}
+                    disabled={processing || !floorPlanData}
+                    className={`w-full flex items-center gap-2 px-3 py-2 rounded text-sm transition-all ${
+                      processing && currentStep === 1 
+                        ? 'bg-blue-600 text-white' 
+                        : currentStep >= 2 
+                        ? 'bg-green-600 text-white' 
+                        : floorPlanData
+                        ? 'bg-purple-600 text-white hover:bg-purple-500'
+                        : 'bg-gray-600 text-gray-500'
+                    }`}
+                  >
+                    {processing && currentStep === 1 ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : currentStep >= 2 ? (
+                      <CheckCircle className="w-4 h-4" />
+                    ) : (
+                      <Grid className="w-4 h-4" />
+                    )}
+                    <span>{processing && currentStep === 1 ? 'Optimizing...' : 'Place Îlots'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => processStep(2)}
+                    disabled={processing || !ilotData}
+                    className={`w-full flex items-center gap-2 px-3 py-2 rounded text-sm transition-all ${
+                      processing && currentStep === 2 
+                        ? 'bg-blue-600 text-white' 
+                        : analysisResult 
+                        ? 'bg-green-600 text-white' 
+                        : ilotData
+                        ? 'bg-orange-600 text-white hover:bg-orange-500'
+                        : 'bg-gray-600 text-gray-500'
+                    }`}
+                  >
+                    {processing && currentStep === 2 ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : analysisResult ? (
+                      <CheckCircle className="w-4 h-4" />
+                    ) : (
+                      <MapPin className="w-4 h-4" />
+                    )}
+                    <span>{processing && currentStep === 2 ? 'Generating...' : 'Generate Corridors'}</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Export Controls */}
+            {analysisResult && (
+              <div className="bg-gray-750 rounded border border-gray-600">
+                <div className="bg-gray-700 px-3 py-2 border-b border-gray-600">
+                  <div className="flex items-center gap-2">
+                    <Download className="w-4 h-4 text-blue-400" />
+                    <span className="text-white text-sm font-medium">Export</span>
+                  </div>
+                </div>
+                
+                <div className="p-4 space-y-2">
+                  <button 
+                    onClick={() => handleExport('pdf')}
+                    className="w-full bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded text-sm flex items-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    PDF Report
+                  </button>
+                  <button 
+                    onClick={() => handleExport('dxf')}
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded text-sm flex items-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    Export DXF
+                  </button>
+                  <button 
+                    onClick={() => handleExport('json')}
+                    className="w-full bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded text-sm flex items-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    Export Data
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Main Viewport - CAD Drawing Area */}
+        <div className="flex-1 bg-gray-850 overflow-hidden">
+          <div className="h-full flex flex-col">
+            {/* Viewport Header */}
+            <div className="bg-gray-800 border-b border-gray-700 px-4 py-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <h3 className="text-white font-medium">Floor Plan Analysis</h3>
+                  {floorPlanData && (
+                    <div className="flex items-center gap-2 text-gray-400 text-sm">
+                      <Layers className="w-4 h-4" />
+                      <span>Scale: 1:100</span>
+                    </div>
+                  )}
+                </div>
+                
+                {floorPlanData && (
+                  <div className="flex items-center gap-2">
+                    <button className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs text-white">
+                      <Eye className="w-3 h-3" />
+                    </button>
+                    <button className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs text-white">
+                      Zoom Fit
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Main Drawing Area */}
+            <div className="flex-1 p-4">
+              {floorPlanData ? (
+                <div className="h-full bg-white rounded border border-gray-600 overflow-hidden">
+                  <ProfessionalFloorPlanRenderer
+                    floorPlan={floorPlanData}
+                    ilots={ilotData || []}
+                    corridors={corridorData || []}
+                    showIlots={currentStep >= 2}
+                    showCorridors={currentStep >= 3}
+                    scale={0.8}
+                  />
+                </div>
+              ) : (
+                <div className="h-full flex items-center justify-center">
+                  <div className="text-center">
+                    <FileText className="w-16 h-16 mx-auto text-gray-600 mb-4" />
+                    <h3 className="text-gray-400 text-lg font-medium mb-2">No Floor Plan Loaded</h3>
+                    <p className="text-gray-500 text-sm">Upload a CAD file to begin analysis</p>
                   </div>
                 </div>
               )}
@@ -274,341 +495,57 @@ const CADAnalysisApp = () => {
           </div>
         </div>
 
-        {/* Enhanced Processing Controls */}
-        {uploadedFile && (
-          <div className="card animate-fade-in mb-8">
-            <div className="card-header">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Settings className="w-6 h-6 text-blue-600" />
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">Analysis Pipeline</h2>
-                    <p className="text-sm text-gray-600">Configure analysis parameters and execute processing steps</p>
-                  </div>
-                </div>
-                {processing && (
-                  <div className="flex items-center gap-2 text-blue-600">
-                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-sm font-medium">Processing...</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="p-8">
-              {/* Enhanced Corridor Configuration */}
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-orange-500" />
-                  Configuration Parameters
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Corridor Width
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        value={corridorConfig.width}
-                        onChange={(e) => setCorridorConfig({
-                          ...corridorConfig,
-                          width: parseInt(e.target.value) || 1200
-                        })}
-                        className="input-field pr-12"
-                        min="800"
-                        max="3000"
-                      />
-                      <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">mm</span>
-                    </div>
-                    <p className="text-xs text-gray-500">Recommended: 1200-1800mm</p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Min Clearance
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        value={corridorConfig.minClearance}
-                        onChange={(e) => setCorridorConfig({
-                          ...corridorConfig,
-                          minClearance: parseInt(e.target.value) || 600
-                        })}
-                        className="input-field pr-12"
-                      />
-                      <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">mm</span>
-                    </div>
-                    <p className="text-xs text-gray-500">Safety clearance space</p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Max Length
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        value={corridorConfig.maxLength}
-                        onChange={(e) => setCorridorConfig({
-                          ...corridorConfig,
-                          maxLength: parseInt(e.target.value) || 15000
-                        })}
-                        className="input-field pr-12"
-                      />
-                      <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">mm</span>
-                    </div>
-                    <p className="text-xs text-gray-500">Maximum corridor span</p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Compliance
-                    </label>
-                    <div className="flex items-center p-3 bg-white rounded-lg border border-gray-200">
-                      <input
-                        type="checkbox"
-                        id="accessibility"
-                        checked={corridorConfig.accessibility}
-                        onChange={(e) => setCorridorConfig({
-                          ...corridorConfig,
-                          accessibility: e.target.checked
-                        })}
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <label htmlFor="accessibility" className="ml-3 text-sm font-medium text-gray-700">
-                        ADA Compliant
-                      </label>
-                    </div>
-                    <p className="text-xs text-gray-500">Accessibility standards</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Enhanced Process Buttons */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <Play className="w-5 h-5 text-green-500" />
-                  Processing Steps
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <button
-                    onClick={() => processStep(0)}
-                    disabled={processing}
-                    className={`${
-                      processing && currentStep === 0 
-                        ? 'btn-secondary' 
-                        : currentStep >= 1 
-                        ? 'btn-success' 
-                        : 'btn-primary'
-                    } flex items-center gap-3 justify-center relative overflow-hidden`}
-                  >
-                    {processing && currentStep === 0 ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    ) : currentStep >= 1 ? (
-                      <CheckCircle className="w-5 h-5" />
-                    ) : (
-                      <FileText className="w-5 h-5" />
-                    )}
-                    <div className="flex flex-col items-start">
-                      <span className="font-semibold">
-                        {processing && currentStep === 0 ? 'Processing...' : 'Extract Floor Plan'}
-                      </span>
-                      <span className="text-xs opacity-80">Parse CAD structure</span>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => processStep(1)}
-                    disabled={processing || !floorPlanData}
-                    className={`${
-                      processing && currentStep === 1 
-                        ? 'btn-secondary' 
-                        : currentStep >= 2 
-                        ? 'btn-success' 
-                        : 'btn-accent'
-                    } flex items-center gap-3 justify-center`}
-                  >
-                    {processing && currentStep === 1 ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    ) : currentStep >= 2 ? (
-                      <CheckCircle className="w-5 h-5" />
-                    ) : (
-                      <Grid className="w-5 h-5" />
-                    )}
-                    <div className="flex flex-col items-start">
-                      <span className="font-semibold">
-                        {processing && currentStep === 1 ? 'Optimizing...' : 'Place Îlots'}
-                      </span>
-                      <span className="text-xs opacity-80">AI space optimization</span>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => processStep(2)}
-                    disabled={processing || !ilotData}
-                    className={`${
-                      processing && currentStep === 2 
-                        ? 'btn-secondary' 
-                        : analysisResult 
-                        ? 'btn-success' 
-                        : 'btn-warning'
-                    } flex items-center gap-3 justify-center`}
-                  >
-                    {processing && currentStep === 2 ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    ) : analysisResult ? (
-                      <CheckCircle className="w-5 h-5" />
-                    ) : (
-                      <MapPin className="w-5 h-5" />
-                    )}
-                    <div className="flex flex-col items-start">
-                      <span className="font-semibold">
-                        {processing && currentStep === 2 ? 'Generating...' : 'Generate Corridors'}
-                      </span>
-                      <span className="text-xs opacity-80">Smart pathway design</span>
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Professional CAD Visualization */}
-        {/* Professional Floor Plan Visualization */}
-        {floorPlanData && (
-          <div className="card animate-fade-in">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <Grid className="w-6 h-6 text-blue-600" />
-              Professional Floor Plan Analysis
-            </h3>
-            <ProfessionalFloorPlanRenderer
-              floorPlan={floorPlanData}
-              ilots={ilotData || []}
-              corridors={corridorData || []}
-              showIlots={currentStep >= 2}
-              showCorridors={currentStep >= 3}
-              scale={0.8}
-            />
-          </div>
-        )}
-
-        {/* Enhanced Analysis Results */}
+        {/* Right Panel - Analysis Results */}
         {analysisResult && (
-          <div className="card animate-fade-in mt-8">
-            <div className="card-header">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <BarChart3 className="w-6 h-6 text-green-600" />
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">Analysis Results</h2>
-                    <p className="text-sm text-gray-600">Comprehensive analysis report with optimization metrics</p>
+          <div className="w-80 bg-gray-800 border-l border-gray-700 overflow-y-auto">
+            <div className="p-4">
+              <div className="bg-gray-750 rounded border border-gray-600">
+                <div className="bg-gray-700 px-3 py-2 border-b border-gray-600">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-green-400" />
+                    <span className="text-white text-sm font-medium">Analysis Results</span>
                   </div>
                 </div>
-                <div className="flex gap-3">
-                  <button 
-                    onClick={() => handleExport('pdf')}
-                    className="btn-primary flex items-center gap-2 px-4 py-2 text-sm"
-                  >
-                    <Download className="w-4 h-4" />
-                    PDF Report
-                  </button>
-                  <button 
-                    onClick={() => handleExport('dxf')}
-                    className="btn-secondary flex items-center gap-2 px-4 py-2 text-sm"
-                  >
-                    <Download className="w-4 h-4" />
-                    Export DXF
-                  </button>
-                  <button 
-                    onClick={() => handleExport('json')}
-                    className="btn-success flex items-center gap-2 px-4 py-2 text-sm"
-                  >
-                    <Download className="w-4 h-4" />
-                    Export Data
-                  </button>
-                </div>
-              </div>
-            </div>
+                
+                <div className="p-4 space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-blue-900/20 p-3 rounded border border-blue-600/30">
+                      <div className="text-blue-400 text-xs">Total Îlots</div>
+                      <div className="text-white text-lg font-bold">{analysisResult.optimization.totalIlots}</div>
+                    </div>
+                    
+                    <div className="bg-green-900/20 p-3 rounded border border-green-600/30">
+                      <div className="text-green-400 text-xs">Space Utilization</div>
+                      <div className="text-white text-lg font-bold">{analysisResult.optimization.spaceUtilization.toFixed(1)}%</div>
+                    </div>
+                    
+                    <div className="bg-purple-900/20 p-3 rounded border border-purple-600/30">
+                      <div className="text-purple-400 text-xs">Corridor Length</div>
+                      <div className="text-white text-lg font-bold">{(analysisResult.optimization.totalCorridorLength / 1000).toFixed(1)}m</div>
+                    </div>
+                    
+                    <div className="bg-orange-900/20 p-3 rounded border border-orange-600/30">
+                      <div className="text-orange-400 text-xs">Efficiency</div>
+                      <div className="text-white text-lg font-bold">{analysisResult.optimization.efficiency.toFixed(1)}%</div>
+                    </div>
+                  </div>
 
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                      <Grid className="w-5 h-5 text-white" />
+                  <div className="border-t border-gray-600 pt-4">
+                    <div className="text-gray-300 text-xs mb-2">Compliance Metrics</div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">Accessibility Score</span>
+                        <span className="text-white">{analysisResult.optimization.accessibilityScore.toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">Clearance Compliance</span>
+                        <span className="text-white">{analysisResult.optimization.clearanceCompliance}%</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">Corridor Segments</span>
+                        <span className="text-white">{corridorData?.length || 0}</span>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-2xl font-bold text-blue-900">{analysisResult.optimization.totalIlots}</div>
-                      <div className="text-sm text-blue-700 font-medium">Total Îlots</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-blue-600">Optimal workspace distribution</div>
-                </div>
-
-                <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                      <BarChart3 className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-green-900">{analysisResult.optimization.spaceUtilization.toFixed(1)}%</div>
-                      <div className="text-sm text-green-700 font-medium">Space Utilization</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-green-600">Efficient space allocation</div>
-                </div>
-
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-purple-900">{(analysisResult.optimization.totalCorridorLength / 1000).toFixed(1)}m</div>
-                      <div className="text-sm text-purple-700 font-medium">Corridor Length</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-purple-600">Optimized circulation paths</div>
-                </div>
-
-                <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl border border-orange-200">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
-                      <Zap className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-orange-900">{analysisResult.optimization.efficiency.toFixed(1)}%</div>
-                      <div className="text-sm text-orange-700 font-medium">Efficiency Score</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-orange-600">Overall layout performance</div>
-                </div>
-              </div>
-
-              {/* Additional Metrics */}
-              <div className="mt-8 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  Compliance & Quality Metrics
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-gray-900">{analysisResult.optimization.accessibilityScore.toFixed(1)}%</div>
-                    <div className="text-sm text-gray-600">Accessibility Score</div>
-                    <div className="text-xs text-gray-500 mt-1">ADA compliance rating</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-gray-900">{analysisResult.optimization.clearanceCompliance}%</div>
-                    <div className="text-sm text-gray-600">Clearance Compliance</div>
-                    <div className="text-xs text-gray-500 mt-1">Safety standard adherence</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-gray-900">{corridorData?.length || 0}</div>
-                    <div className="text-sm text-gray-600">Corridor Segments</div>
-                    <div className="text-xs text-gray-500 mt-1">Generated pathway count</div>
                   </div>
                 </div>
               </div>

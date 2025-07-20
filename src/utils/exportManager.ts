@@ -1,4 +1,4 @@
-import { FloorPlan, Ilot, Corridor, CADAnalysisResult } from '../types/cad';
+import { CADAnalysisResult } from '../types/cad';
 import { saveAs } from 'file-saver';
 import { PDFDocument, rgb, PageSizes } from 'pdf-lib';
 
@@ -8,7 +8,7 @@ export class ExportManager {
   async exportPDF(): Promise<void> {
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage(PageSizes.A4);
-    const { width, height } = page.getSize();
+    const { height } = page.getSize();
     
     // Add title
     page.drawText('CAD Analysis Report', {

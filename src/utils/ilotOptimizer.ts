@@ -1,5 +1,5 @@
 
-import { Point, Ilot, FloorPlan, RestrictedArea } from '../types/cad';
+import { Point, Ilot, FloorPlan } from '../types/cad';
 import { v4 as uuidv4 } from 'uuid';
 
 interface IlotSize {
@@ -60,7 +60,7 @@ export class IlotOptimizer {
     this.floorPlan = floorPlan;
   }
 
-  optimizePlacement(maxIterations: number = 1000): Ilot[] {
+  optimizePlacement(_maxIterations: number = 1000): Ilot[] {
     console.log('Starting advanced îlot optimization...');
     
     // Calculate usable areas with enhanced geometry analysis
@@ -178,7 +178,7 @@ export class IlotOptimizer {
 
   private markDoorInGrid(
     grid: boolean[][],
-    door: Door,
+    door: import('../types/cad').Door,
     gridSize: number,
     offsetX: number,
     offsetY: number
@@ -215,7 +215,7 @@ export class IlotOptimizer {
 
   private markWindowInGrid(
     grid: boolean[][],
-    window: Window,
+    window: import('../types/cad').Window,
     gridSize: number,
     offsetX: number,
     offsetY: number

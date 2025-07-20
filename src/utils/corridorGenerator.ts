@@ -208,14 +208,14 @@ export class CorridorGenerator {
     const mainCorridors: Corridor[] = [];
     
     // Create a main circulation spine
-    const bounds = this.calculateFloorPlanBounds();
-    const centerX = (bounds.minX + bounds.maxX) / 2;
-    const centerY = (bounds.minY + bounds.maxY) / 2;
+    // const bounds = this.calculateFloorPlanBounds();
+    // const centerX = (bounds.minX + bounds.maxX) / 2;
+    // const centerY = (bounds.minY + bounds.maxY) / 2;
     
     // Group ilots by regions to create main circulation paths
     const regions = this.groupIlotsByRegion();
     
-    regions.forEach((region, index) => {
+    regions.forEach((region, _index) => {
       if (region.length > 2) {
         const spine = this.createRegionSpine(region);
         if (spine) {
@@ -639,6 +639,7 @@ export class CorridorGenerator {
     return closestPoint;
   }
 
+  /*
   private calculateFloorPlanBounds() {
     const allPoints = this.floorPlan.walls.flatMap(wall => [wall.start, wall.end]);
     
@@ -649,6 +650,7 @@ export class CorridorGenerator {
       maxY: Math.max(...allPoints.map(p => p.y))
     };
   }
+  */
 
   private distanceSegmentToSegment(seg1: { start: Point; end: Point }, wall: { start: Point; end: Point }): number {
     // Simplified distance calculation between two line segments

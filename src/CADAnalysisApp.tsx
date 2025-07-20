@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, FileText, Play, Download, Settings, Grid, MapPin } from 'lucide-react';
+import { Upload, FileText, Play, Grid, MapPin } from 'lucide-react';
 import { CADProcessor } from './utils/cadProcessor';
 import { IlotOptimizer } from './utils/ilotOptimizer';
 import { CorridorGenerator, CorridorConfig } from './utils/corridorGenerator';
@@ -101,7 +101,7 @@ const CADAnalysisApp = () => {
 
       if (step === 0) {
         const processor = new CADProcessor();
-        setFloorPlanData(processor.createDetailedFloorPlan());
+        setFloorPlanData(processor.createAdvancedFloorPlan());
         setCurrentStep(1);
       }
     } finally {

@@ -3,12 +3,13 @@ import { FloorPlan, Wall, Door, Window, Point } from '../types/cad';
 import { v4 as uuidv4 } from 'uuid';
 
 export class CADProcessor {
-  private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D;
+  // Canvas element for potential future processing
+  // Canvas context for potential future use
+  // private _ctx: CanvasRenderingContext2D;
 
   constructor() {
-    this.canvas = document.createElement('canvas');
-    this.ctx = this.canvas.getContext('2d')!;
+    // this.canvas = document.createElement('canvas');
+    // this._ctx = this.canvas.getContext('2d')!;
   }
 
   async processPDF(file: File): Promise<FloorPlan> {
@@ -17,7 +18,7 @@ export class CADProcessor {
     // Enhanced PDF processing with geometric analysis
     try {
       // Simulate PDF.js processing
-      const textContent = await this.extractTextFromPDF(arrayBuffer);
+      await this.extractTextFromPDF(arrayBuffer);
       const vectorData = await this.extractVectorDataFromPDF(arrayBuffer);
       
       if (vectorData.walls.length > 0) {
@@ -57,12 +58,12 @@ export class CADProcessor {
     }
   }
 
-  private async extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
+  private async extractTextFromPDF(_arrayBuffer: ArrayBuffer): Promise<string> {
     // Simulate PDF.js text extraction
     return "Extracted PDF text content";
   }
 
-  private async extractVectorDataFromPDF(arrayBuffer: ArrayBuffer): Promise<any> {
+  private async extractVectorDataFromPDF(_arrayBuffer: ArrayBuffer): Promise<any> {
     // Simulate PDF.js vector extraction
     return {
       walls: [],
@@ -71,7 +72,7 @@ export class CADProcessor {
     };
   }
 
-  private createFloorPlanFromPDFData(vectorData: any): FloorPlan {
+  private createFloorPlanFromPDFData(_vectorData: any): FloorPlan {
     // Convert PDF vector data to floor plan
     return this.createAdvancedFloorPlan();
   }
@@ -103,7 +104,7 @@ export class CADProcessor {
         }
         currentEntity = { 
           type: line, 
-          properties: {},
+          properties: {} as any,
           layer: 'UNKNOWN'
         };
         continue;
@@ -207,7 +208,7 @@ export class CADProcessor {
       restrictedAreas: this.detectRestrictedAreas(entities),
       bounds,
       scale: this.detectScale(entities),
-      unit: this.detectUnit(entities),
+      unit: this.detectUnit(entities) as 'mm' | 'cm' | 'm' | 'ft' | 'in',
       totalArea,
       usableArea: totalArea * 0.85
     };
@@ -252,7 +253,7 @@ export class CADProcessor {
   }
 
   private findParallelLines(targetLine: any, layerGroups: Record<string, any[]>): any[] {
-    const parallel = [];
+    const parallel: any[] = [];
     const tolerance = 0.1; // Angle tolerance in radians
     
     const targetAngle = Math.atan2(
@@ -310,7 +311,7 @@ export class CADProcessor {
   }
 
   private detectRestrictedAreas(entities: any[]): any[] {
-    const restrictedAreas = [];
+    const restrictedAreas: any[] = [];
     
     // Look for bathroom, kitchen, or utility room indicators
     entities.forEach(entity => {
@@ -383,7 +384,7 @@ export class CADProcessor {
 
   private cleanupWallGeometry(walls: Wall[]): Wall[] {
     // Remove duplicate walls
-    const cleaned = [];
+    const cleaned: any[] = [];
     const tolerance = 10; // 10mm tolerance
     
     walls.forEach(wall => {
@@ -452,21 +453,21 @@ export class CADProcessor {
     const restrictedAreas = [
       {
         id: uuidv4(),
-        type: 'bathroom',
+        type: 'MECHANICAL' as const,
         bounds: [
           { x: 500, y: 8500 }, { x: 3500, y: 8500 },
           { x: 3500, y: 11500 }, { x: 500, y: 11500 }
         ],
-        reason: 'Bathroom facilities'
+        description: 'Bathroom facilities'
       },
       {
         id: uuidv4(),
-        type: 'kitchen',
+        type: 'MECHANICAL' as const,
         bounds: [
           { x: 8500, y: 500 }, { x: 14500, y: 500 },
           { x: 14500, y: 3500 }, { x: 8500, y: 3500 }
         ],
-        reason: 'Kitchen area'
+        description: 'Kitchen area'
       }
     ];
 

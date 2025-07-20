@@ -84,35 +84,42 @@
    - Professional metric cards with colored indicators
    - Live status updates and performance monitoring
 
-4. File Upload Area:
-   - Drag-and-drop with professional styling
-   - File type validation and size limits
-   - Progress indicators and status feedback
-   - Professional file browser integration
+4. Enhanced File Upload Area:
+   - Multi-format support indicator (DXF, DWG, PDF, images)
+   - Smart file detection and format validation
+   - Layer preview for CAD files
+   - Automatic scale detection display
+   - Professional file browser with format filters
 
-5. Configuration Panel:
-   - Advanced parameter controls with sliders
-   - Real-time parameter validation
-   - Professional form layouts with proper spacing
-   - ADA compliance toggles and professional settings
+5. Advanced Configuration Panel:
+   - Pixel-perfect color controls (Gray #6B7280, Blue #3B82F6, Red #EF4444)
+   - Îlot size distribution controls (small/medium/large ratios)
+   - Corridor width and clearance parameters
+   - Accessibility compliance toggles (ADA standards)
+   - Real-time measurement unit selection (metric/imperial)
 
-6. Processing Pipeline:
-   - Multi-step workflow with visual progress
-   - Professional status indicators
-   - Real-time processing feedback
-   - Error handling with detailed messages
+6. Multi-Phase Processing Pipeline:
+   - Phase 1: CAD Processing & Floor Plan Extraction
+   - Phase 2: Pixel-Perfect Visual Reproduction  
+   - Phase 3: Intelligent Îlot Placement
+   - Phase 4: Corridor Network Generation
+   - Real-time progress tracking with phase-specific status
 
-7. Results Visualization:
-   - Professional 2D/3D rendering
-   - Interactive floor plan display
-   - Zoom, pan, and professional CAD navigation
-   - Layer management and visibility controls
+7. Professional Results Visualization:
+   - Pixel-perfect floor plan rendering with exact color matching
+   - Interactive measurement tools and area calculators
+   - Layer visibility controls (walls, îlots, corridors, annotations)
+   - Professional zoom/pan with coordinate display
+   - Real-time îlot editing and corridor adjustment
+   - Area labels with precise measurements (5.50m², 7.50m², etc.)
 
-8. Export Section:
-   - Professional export cards with gradients
-   - Multiple format support (PDF, DXF, JSON, 3D)
-   - Professional download management
-   - Export progress and status tracking
+8. Advanced Export Section:
+   - High-resolution image export (PNG, SVG)
+   - Professional PDF reports with analysis data
+   - CAD-compatible DXF export for professional software
+   - JSON data export with complete geometric information
+   - Measurement summary reports
+   - Export progress tracking with quality indicators
 ```
 
 ### 4. COMPLETE STYLING REQUIREMENTS
@@ -130,37 +137,53 @@
 - Modern button designs with gradients
 ```
 
-### 5. REAL-WORLD FUNCTIONALITY
+### 5. PIXEL-PERFECT CAD PROCESSING & REAL-WORLD FUNCTIONALITY
 ```typescript
 // COMPLETE IMPLEMENTATION REQUIRED:
 
-1. CAD File Processing:
-   - Parse real DXF files using dxf-parser
-   - Extract geometric entities (lines, arcs, polylines, text)
-   - Handle layers, blocks, and complex drawings
-   - Support metric and imperial units
-   - Professional coordinate system handling
+1. Enhanced CAD File Processing (Phase 1):
+   - Multi-format support: DXF, DWG, PDF, images with layer-aware processing
+   - Smart floor plan detection among multiple sheets/views
+   - Wall detection with proper thickness and connectivity analysis
+   - Door/window opening identification with swing directions
+   - Room boundary detection and automatic labeling
+   - Automatic scaling, unit conversion, and coordinate normalization
+   - Element classification: walls, openings, dimensions, annotations, furniture
 
-2. Îlot Optimization:
-   - Genetic algorithm with real fitness functions
-   - Multiple placement strategies (grid, rows, organic)
-   - Accessibility compliance (ADA standards)
-   - Space utilization optimization
-   - Collision avoidance algorithms
+2. Pixel-Perfect Visual Reproduction (Phase 2):
+   - Exact color matching: Gray walls (#6B7280), Blue restricted areas (#3B82F6), Red entrance/exit zones (#EF4444)
+   - Professional architectural line weights and styles
+   - Thick gray lines for walls (MUR designation)
+   - Blue restricted areas with "NO ENTREE" labeling
+   - Red entrance/exit zones with curved door swing indicators
+   - Clean geometric relationships and proper room spacing
+   - Vector-based SVG/Canvas rendering for precision at any scale
 
-3. Corridor Generation:
-   - A* pathfinding for optimal routes
-   - Width and clearance validation
-   - Accessibility compliance checking
-   - Multiple corridor connection strategies
-   - Professional routing algorithms
+3. Intelligent Îlot Placement (Phase 3):
+   - Advanced room analysis calculating usable floor area excluding restricted zones
+   - Smart furniture placement zone identification
+   - Multiple îlot sizes (small, medium, large) with size-based color coding
+   - Light pink/red outlines matching reference specifications
+   - Accessibility clearance requirements and ADA compliance
+   - Maximum space utilization algorithms with proper îlot spacing
+   - Real-time area calculations and optimization metrics
 
-4. Export System:
-   - Real PDF generation with professional layouts
-   - DXF export with proper formatting
-   - JSON data export with complete schemas
-   - 3D model generation for visualization
-   - Professional report generation
+4. Professional Corridor Network (Phase 4):
+   - Graph-based pathfinding connecting all îlots optimally
+   - Minimum spanning tree algorithms for efficiency
+   - Pink/red corridor lines with professional styling
+   - Area measurements for each îlot (5.50m², 7.50m², etc.)
+   - Accessibility standards compliance checking
+   - Visual hierarchy maintenance (walls → îlots → corridors → text)
+   - Interactive editing and real-time adjustment capabilities
+
+5. Advanced Export & Visualization:
+   - High-resolution image export with pixel-perfect quality
+   - Professional PDF reports with measurements and analysis
+   - CAD file export (DXF format) for professional software compatibility
+   - Interactive zoom and pan with measurement tools
+   - Professional typography for labels and annotations
+   - Scalable vector output for any resolution requirement
 ```
 
 ### 6. PROFESSIONAL PROJECT STRUCTURE
@@ -248,7 +271,47 @@ The application is complete when:
 
 ```bash
 # Use this exact prompt with Replit Agent:
-"Create a complete, enterprise-grade CAD Analysis Pro application using React TypeScript and Vite. This must be a real-world, industry-standard application that matches the sophistication of AutoCAD or SolidWorks. Implement the complete 'Enterprise Îlot Placement System' with professional gradient headers, advanced CAD processing, genetic algorithms for optimization, A* pathfinding for corridors, real DXF/PDF parsing, and professional export capabilities. The interface must use enterprise-grade styling with glass morphism, professional gradients, and modern design patterns. NO basic, demo, or simplified implementations allowed - this is production-ready enterprise software with complete functionality."
+"Create a complete, enterprise-grade CAD Analysis Pro application using React TypeScript and Vite. This must be a real-world, industry-standard application that matches the sophistication of AutoCAD or SolidWorks with pixel-perfect floor plan processing.
+
+CRITICAL REQUIREMENTS:
+- NO basic, demo, simplified, fallback, mock, or placeholder implementations
+- Professional interface matching Microsoft Office/Adobe Creative Suite sophistication
+- Complete 'Enterprise Îlot Placement System' with professional gradient headers
+- PIXEL-PERFECT CAD processing with exact color matching and geometric precision
+- Multi-phase processing pipeline (CAD extraction → Visual reproduction → Îlot placement → Corridor generation)
+- Advanced DXF/PDF parsing with layer-aware processing and smart floor plan detection
+- Genetic algorithms for îlot optimization with real fitness functions
+- Graph-based pathfinding for corridor generation with minimum spanning tree algorithms
+- Professional export capabilities with high-resolution outputs
+- Enterprise-grade styling with glass morphism, backdrop blur, professional gradients
+
+PIXEL-PERFECT REQUIREMENTS:
+- Exact color matching: Gray walls (#6B7280), Blue restricted areas (#3B82F6), Red entrance/exit zones (#EF4444)
+- Professional architectural line weights with thick gray wall lines
+- Blue 'NO ENTREE' restricted areas with proper positioning
+- Red 'ENTRÉE/SORTIE' zones with curved door swing indicators
+- Light pink/red îlot outlines with size-based categorization
+- Pink/red corridor lines connecting all îlots optimally
+- Precise area measurements for each îlot (5.50m², 7.50m², etc.)
+- Vector-based SVG/Canvas rendering for scalability at any resolution
+
+ADVANCED PROCESSING PHASES:
+Phase 1: Enhanced CAD file processing with multi-sheet detection and layer extraction
+Phase 2: Pixel-perfect visual reproduction matching architectural drawing standards
+Phase 3: Intelligent îlot placement with room analysis and space optimization
+Phase 4: Professional corridor network generation with accessibility compliance
+
+TECHNICAL IMPLEMENTATION:
+- Multi-format support: DXF, DWG, PDF, images with smart format detection
+- Wall detection with thickness analysis and connectivity mapping  
+- Door/window opening identification with swing direction recognition
+- Room boundary detection with automatic labeling and area calculation
+- Advanced space utilization algorithms with accessibility clearance requirements
+- Interactive measurement tools with real-time editing capabilities
+- Professional typography and annotation systems
+- High-resolution export with pixel-perfect quality maintenance
+
+This is production-ready enterprise software with pixel-perfect precision - not a prototype or demo. The final application must be indistinguishable from professional CAD software in appearance, functionality, and geometric accuracy."
 ```
 
 **REMEMBER**: This is not a prototype or demo - this is a complete, professional, enterprise-grade CAD application that must meet real-world industry standards in every aspect.

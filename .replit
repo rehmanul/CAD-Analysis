@@ -12,6 +12,11 @@ publicDir = "dist"
 runButton = "React Dev Server"
 
 [[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow]]
 name = "React Dev Server"
 mode = "sequential"
 
